@@ -27,6 +27,24 @@ const PostDetail = () => {
     topBar.style.borderColor = `hsl(0deg 0% 0% / ${percentage * 0.12}%)`
   }
 
+  // 온도별 face image (face-6 최상 -> face-1 최하)
+  const setFaceMark = (temp) => {
+    if (temp >= 80) {
+      return 'face-6'
+    } else if (temp < 80 && temp >= 60) {
+      return 'face-5'
+    } else if (temp < 60 && temp >= 50) {
+      return 'face-4'
+    } else if (temp < 50 && temp >= 40) {
+      return 'face-3'
+    } else if (temp < 40 && temp >= 30) {
+      return 'face-2'
+    } else if (temp < 30) {
+      return 'face-1'
+
+    }
+  }
+
   const handleClickLikeBtn = () => {
     const onState = heart ? '' : 'on'
     setHeart(onState)
@@ -38,20 +56,17 @@ const PostDetail = () => {
   }
 
   const handleOpenOtpModal = (e) => {
-    console.log('모달 오픈')
     setOptModal(true)
     console.log(opt_modal_open)
   }
 
   const handleClickRemoveBtn = (e) => {
     e.stopPropagation()
-    console.log('삭제')
     setOptModal(false)
   }
 
   const handleClickModifyBtn = (e) => {
     e.stopPropagation()
-    console.log('수정')
     setOptModal(false)
   }
 
@@ -73,6 +88,7 @@ const PostDetail = () => {
       window.addEventListener('click', handleCloseOptModal)
     }
   }, [])
+
   return (
       <DetailWrap>
         <nav className={'detail-nav'} ref={topBarRef}>
@@ -93,13 +109,13 @@ const PostDetail = () => {
               <button type={'button'} className={'more-btn'} onClick={handleOpenOtpModal}>
                 <BiDotsVerticalRounded className={'more-icon'}/>
                 {
-                  opt_modal_open
-                  && (
-                      <div className={`opt-modal`}>
-                        <div type={'button'} className={'opt-btn'} onClick={handleClickModifyBtn}>수정</div>
-                        <div type={'button'} className={'opt-btn'} onClick={handleClickRemoveBtn}>삭제</div>
-                      </div>
-                  )
+                    opt_modal_open
+                    && (
+                        <div className={`opt-modal`}>
+                          <div type={'button'} className={'opt-btn'} onClick={handleClickModifyBtn}>수정</div>
+                          <div type={'button'} className={'opt-btn'} onClick={handleClickRemoveBtn}>삭제</div>
+                        </div>
+                    )
                 }
               </button>
             </div>
@@ -135,8 +151,8 @@ const PostDetail = () => {
               </div>
 
               <div className={'user-rating'}>
-                <div className={'rating-temp'}>
-                  <span className={'rating-num'}>37.5 °C</span>
+                <div className={`rating-temp ${setFaceMark(50.5)}`}>
+                  <span className={'rating-num'}>50.5 °C</span>
                   <span className={'rating-icon'}></span>
                 </div>
                 <div className={'rating-guide'}>매너온도</div>
@@ -469,6 +485,68 @@ const DetailWrap = styled.section`
         display: flex;
         align-items: center;
         margin-bottom: 2px;
+        
+        &.face-1 {
+          .rating-num {
+            color: #1c466e;
+          }
+
+          .rating-icon {
+            background-position: 0 -27px;
+          }
+        }
+
+        &.face-2 {
+          .rating-num {
+            color: #577795;
+          }
+
+          .rating-icon {
+            background-position: 0 -51px;
+          }
+        }
+
+        &.face-3 {
+          .rating-num {
+            color: #286eb1;
+          }
+
+          .rating-icon {
+            background-position: 0 -75px;
+          }
+        }
+
+        &.face-4 {
+          .rating-num {
+            color: #3fa551;
+          }
+
+          .rating-icon {
+            background-position: 0 -99px;
+          }
+        }
+
+        &.face-5 {
+          .rating-num {
+            color: #e5a328;
+          }
+
+          .rating-icon {
+            background-position: 0 -123px;
+          }
+        }
+
+        &.face-6 {
+          .rating-num {
+            color: #e16716;
+          }
+
+          .rating-icon {
+            width: 29px;
+            height: 27px;
+            background-position: 0 0;
+          }
+        }
       }
 
       .rating-num {
@@ -483,69 +561,6 @@ const DetailWrap = styled.section`
         background-position: 0 -123px;
         background-size: 29px 147px;
         background-image: url('https://d1unjqcospf8gs.cloudfront.net/assets/home/articles/face-icon-set-0cffc52be32961b0bb4a308c272d8f526ddcdeda66dbde6eb32618eeb22b74e6.png');
-      }
-
-
-      &.face-1 {
-        .rating-num {
-
-        }
-
-        .rating-icon {
-          background-position: 0 -27px;
-        }
-      }
-
-      &.face-2 {
-        .rating-num {
-
-        }
-
-        .rating-icon {
-          background-position: 0 -51px;
-        }
-      }
-
-      &.face-3 {
-        .rating-num {
-
-        }
-
-        .rating-icon {
-          background-position: 0 -75px;
-        }
-      }
-
-      &.face-4 {
-        .rating-num {
-
-        }
-
-        .rating-icon {
-          background-position: 0 -99px;
-        }
-      }
-
-      &.face-5 {
-        .rating-num {
-
-        }
-
-        .rating-icon {
-          background-position: 0 -123px;
-        }
-      }
-
-      &.face-6 {
-        .rating-num {
-
-        }
-
-        .rating-icon {
-          width: 29px;
-          height: 27px;
-          background-position: 0 0;
-        }
       }
 
       .rating-guide {
