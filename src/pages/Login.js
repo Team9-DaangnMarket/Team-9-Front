@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useHistory } from "react-router";
 import { axiosInstance } from "../shared/api";
 
 import { Grid, Button } from "../elements";
 
 const Login = () => {
-  const history = useHistory();
   const [login_disabeld, setLoginDisabled] = useState(true);
   const [input_values, setInputValues] = useState({ user_id: "", user_pw: "" });
   console.log(login_disabeld);
@@ -33,6 +31,7 @@ const Login = () => {
         console.log(`로그인 오류 발생: ${err}`);
       });
   };
+
 
   useEffect(() => {
     if (input_values.user_id !== "" && input_values.user_pw !== "") {
@@ -84,7 +83,7 @@ const Login = () => {
             <button
               className="signup_btn"
               onClick={() => {
-                history.push("/signup");
+                //history.push("/signup");
               }}
             >
               회원가입
