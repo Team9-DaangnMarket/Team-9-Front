@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const Button = (props) => {
+
   const { _onClick, _className, version, children, disabled } = props;
   const styles = {
     onClick: _onClick,
