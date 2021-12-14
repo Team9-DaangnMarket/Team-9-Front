@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import styled from "styled-components";
-import { useHistory } from "react-router";
-import { Grid, Button } from "../elements";
+import {useHistory} from "react-router";
+import { axiosInstance } from "../api";
+
+import {Grid, Button} from "../elements";
 
 const Login = () => {
   const history = useHistory();
   const [login_disabeld, setLoginDisabled] = useState(true);
-  const [input_values, setInputValues] = useState({ user_id: "", user_pw: "" });
+  const [input_values, setInputValues] = useState({user_id: "", user_pw: ""});
   console.log(login_disabeld);
 
   const handleChangeInput = (e) => {
@@ -15,6 +17,23 @@ const Login = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleClickLogin = () => {
+    console.log('로그인')
+    axiosInstance
+        .post(`/user/login`, {
+          // username: id,
+          // password: pw,
+        })
+        .then((res) => {
+          console.log(res);
+          window.alert("로그인 성공!");
+        })
+        .catch((err) => {
+          console.log(`로그인 오류 발생: ${err}`);
+        });
+  }
+
   useEffect(() => {
     if (input_values.user_id !== "" && input_values.user_pw !== "") {
       setLoginDisabled(false);
@@ -22,79 +41,80 @@ const Login = () => {
       setLoginDisabled(true);
     }
 
-    return () => {};
+    return () => {
+    };
   }, [input_values]);
 
   return (
-    <Grid is_container>
-      <Wrap>
-        <div className="logo_img">로고 이미지</div>
+      <Grid is_container>
+        <Wrap>
+          <div className="logo_img">
+            <img src="assets/signup_logo.png" alt="logo" />
+          </div>
 
-        <div className="input_bx">
-          <input
-            className="inputEl"
-            type="text"
-            name="user_id"
-            placeholder="아이디"
-            onChange={handleChangeInput}
-          />
+          <div className="input_bx">
+            <input
+                className="inputEl"
+                type="text"
+                name="user_id"
+                placeholder="아이디"
+                onChange={handleChangeInput}
+            />
 
-          <input
-            className="inputEl"
-            type="password"
-            name="user_pw"
-            placeholder="비밀번호"
-            onChange={handleChangeInput}
-          />
-        </div>
+            <input
+                className="inputEl"
+                type="password"
+                name="user_pw"
+                placeholder="비밀번호"
+                onChange={handleChangeInput}
+            />
+          </div>
 
-        <Button
-          _className="login_btn"
-          version="orange"
-          disabled={login_disabeld}
-        >
-          로그인
-        </Button>
+          <Button
+              _className="login_btn"
+              version="orange"
+              disabled={false}
+              _onClick={handleClickLogin}
+          >
+            로그인
+          </Button>
 
-        <button className="login_btn" disabled>
-          dasd
-        </button>
-        <div className="process_login">
-          <p>
-            아직 계정이 없으신가요?
-            <button
-              className="signup_btn"
-              onClick={() => {
-                history.push("/signup");
-              }}
-            >
-              회원가입
-            </button>
-          </p>
-        </div>
-      </Wrap>
-    </Grid>
+          <div className="process_login">
+            <p>
+              아직 계정이 없으신가요?
+              <button
+                  className="signup_btn"
+                  onClick={() => {
+                    history.push("/signup");
+                  }}
+              >
+                회원가입
+              </button>
+            </p>
+          </div>
+        </Wrap>
+      </Grid>
   );
 };
 
 const Wrap = styled.div`
-  margin-top: 50px;
-  padding: 20px;
-  border: 1px solid #eee;
-  font-size: 20px;
 
   .logo_img {
     margin-top: 20px;
     width: 100%;
-    height: 40vh;
-    background: tomato;
+    
+    img {
+      width: 100%;
+    }
   }
   .input_bx {
     display: flex;
     flex-direction: column;
+    width: 300px;
+    margin: 0 auto;
   }
   .inputEl {
-    margin-top: 30px;
+    margin-top: 20px;
     padding: 10px;
     width: 100%;
     border: 1px solid var(--sub-font-color);
@@ -103,9 +123,9 @@ const Wrap = styled.div`
     outline: none;
   }
   .login_btn {
-    margin: 30px 0 10px;
-    width: 100%;
-    font-size: 22px;
+    width: 300px;
+    margin: 0 auto;
+    margin-top: 30px;
 
     &:disabled {
       cursor: default;
@@ -113,13 +133,17 @@ const Wrap = styled.div`
     }
   }
   .process_login {
+    font-size: 13.3px;
     text-align: right;
+    width: 300px;
+    margin: 0 auto;
+    margin-top: 10px;
+    
   }
   .signup_btn {
     padding: 5px;
     border: none;
     background: transparent;
-    font-size: 20px;
     outline: none;
     cursor: pointer;
   }
