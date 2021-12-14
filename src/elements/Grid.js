@@ -1,3 +1,4 @@
+
 import React from "react";
 import styled from "styled-components";
 
@@ -8,6 +9,7 @@ const Grid = (props) => {
     is_flex,
     flex_align,
     flex_justify,
+    padding,
     children,
   } = props;
   const styles = {
@@ -16,6 +18,7 @@ const Grid = (props) => {
     flex_align,
     flex_justify,
     className: _className,
+    padding,
   };
   return <GridBox {...styles}>{children}</GridBox>;
 };
@@ -31,7 +34,8 @@ const GridBox = styled.div`
               max-width: 425px;
             `}
 
-  ${({ is_flex }) => is_flex && "display: flex;"}
-  ${({ flex_align }) => flex_align && `align-items: ${flex_align}`}
-  ${({ flex_justify }) => flex_justify && `justify-content: ${flex_justify}`}
+  ${({ is_flex }) => is_flex && 'display: flex;'}
+  ${({ flex_align }) => flex_align && `align-items: ${flex_align};`}
+  ${({ flex_justify }) => flex_justify && `justify-content: ${flex_justify};`}
+  ${({ padding }) => padding && `padding: ${padding};`}
 `;
