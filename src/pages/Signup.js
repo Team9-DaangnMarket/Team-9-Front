@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { axiosInstance } from "../api";
+import { axiosInstance } from "../shared/api";
 import { checkName, checkId, checkPw } from "../shared/Check";
 import styled from "styled-components";
 import { Grid, Button } from "../elements/index";
