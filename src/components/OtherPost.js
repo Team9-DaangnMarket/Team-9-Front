@@ -3,10 +3,10 @@ import styled from 'styled-components'
 
 import { Grid, Button } from '../elements';
 
-const OtherProduct = () => {
+const OtherPost = () => {
   console.log('[OtherProduct]')
   return (
-    <OtherProducts>
+    <OtherList>
       <Grid is_container is_flex flex_justify={'space-between'} flex_align={'flex-end'} padding={'16px'}>
         <h3 className={'title'}>하루살이님의 판매상품</h3>
         <button type={'button'} className={'all-btn'}>모두보기</button>
@@ -56,13 +56,13 @@ const OtherProduct = () => {
           </li>
         </ul>
       </Grid>
-    </OtherProducts>
+    </OtherList>
   );
 };
 
-export default OtherProduct;
+export default OtherPost;
 
-const OtherProducts = styled.article`
+const OtherList = styled.article`
   .all-btn {
     border: 0;
     font-size: 12px;
