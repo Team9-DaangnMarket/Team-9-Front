@@ -1,10 +1,9 @@
 import { Route } from 'react-router-dom';
-import GlobalStyles from './GlobalStyles';
-
 import PostList from '../pages/PostList';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
-import PostDetail from '../pages/PostDetail';
+import PostWrite from '../pages/PostWrite';
+import GlobalStyles from './GlobalStyles';
 
 function App() {
   return (
@@ -14,6 +13,7 @@ function App() {
       <Route path="/login" component={Login} exact />
       <Route path="/signup" component={Signup} exact />
       <Route path="/detail" component={PostDetail} exact />
+      <Route path="/write" component={PostWrite} exact />
     </>
   );
 }

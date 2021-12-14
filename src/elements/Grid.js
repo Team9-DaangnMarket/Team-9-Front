@@ -1,5 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
+
+import React from "react";
+import styled from "styled-components";
 
 const Grid = (props) => {
   const {
@@ -28,7 +29,7 @@ const GridBox = styled.div`
   ${({ is_container }) =>
     is_container &&
     `
-    width: 100%;
+              width: 100%;
               margin: 0 auto;
               max-width: 425px;
             `}

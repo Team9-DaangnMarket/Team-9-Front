@@ -38,6 +38,9 @@ const GlobalStyles = createGlobalStyle`
     color: #4D5159;
     font-family: 'NanumSquareRound',serif;
   }
+  input{
+    font-family: 'NanumSquareRound',serif;
+  }
   
   ol, ul, li {
     list-style-type: none;
