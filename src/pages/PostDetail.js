@@ -57,7 +57,6 @@ const PostDetail = () => {
 
   const handleOpenOtpModal = (e) => {
     setOptModal(true)
-    console.log(opt_modal_open)
   }
 
   const handleClickRemoveBtn = (e) => {
@@ -71,7 +70,6 @@ const PostDetail = () => {
   }
 
   const handleCloseOptModal = (e) => {
-    console.log(e.target.classList.value)
     if (e.target.classList.value === 'opt-btn' || e.target.classList.value === 'more-icon') {
       return
     }
