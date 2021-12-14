@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components'
+import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
   // 변수 사용방법 -> var(--pointer-color);
@@ -38,6 +38,9 @@ const GlobalStyles = createGlobalStyle`
     color: #4D5159;
     font-family: 'NanumSquareRound',serif;
   }
+  input{
+    font-family: 'NanumSquareRound',serif;
+  }
   
   ol, ul, li {
     list-style-type: none;
@@ -56,5 +59,5 @@ const GlobalStyles = createGlobalStyle`
     border-radius: 10px;
     background-color: #aaa;
   }
-`
-export default GlobalStyles
+`;
+export default GlobalStyles;
