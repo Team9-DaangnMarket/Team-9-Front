@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import styled from "styled-components";
 import {useHistory} from "react-router";
-import { axiosInstance } from "../api";
+import { axiosInstance } from "../shared/api";
 
 import {Grid, Button} from "../elements";
 
@@ -22,8 +22,8 @@ const Login = () => {
     console.log('로그인')
     axiosInstance
         .post(`/user/login`, {
-          // username: id,
-          // password: pw,
+          username: "tester1234",
+          password: "tester1234*",
         })
         .then((res) => {
           console.log(res);

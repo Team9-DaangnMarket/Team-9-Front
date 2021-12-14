@@ -6,7 +6,7 @@ import {Grid, Button} from '../elements';
 import {BiArrowBack, BiHomeAlt, BiDotsVerticalRounded} from 'react-icons/bi';
 import {BsShare} from 'react-icons/bs';
 import {AiFillHeart} from 'react-icons/ai';
-import OtherProduct from '../components/OtherProduct';
+import OtherPost from '../components/OtherPost';
 
 const PostDetail = () => {
   console.log('[PostDetail]')
@@ -250,7 +250,7 @@ const PostDetail = () => {
           </Grid>
         </div>
 
-        <OtherProduct/>
+        <OtherPost />
       </DetailWrap>
   );
 };
@@ -377,7 +377,7 @@ const DetailWrap = styled.section`
       margin-right: 20px;
 
       &.on {
-        color: red;
+        color: var(--point-color);
       }
 
       &::after {
