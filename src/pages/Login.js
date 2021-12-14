@@ -95,7 +95,7 @@ const Wrap = styled.div`
   }
   .inputEl {
     margin-top: 30px;
-    padding: 10px;
+    padding: 0 10px;
     width: 100%;
     border: 1px solid var(--sub-font-color);
     border-radius: 6px;
@@ -105,12 +105,6 @@ const Wrap = styled.div`
   .login_btn {
     margin: 30px 0 10px;
     width: 100%;
-    font-size: 22px;
-
-    &:disabled {
-      cursor: default;
-      opacity: 0.7;
-    }
   }
   .process_login {
     text-align: right;
