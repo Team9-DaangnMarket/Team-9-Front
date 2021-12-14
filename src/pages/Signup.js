@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { axiosInstance } from "../api";
+import { axiosInstance } from "../shared/api";
 import { checkName, checkId, checkPw } from "../shared/Check";
 import styled from "styled-components";
 import { Grid, Button } from "../elements/index";
@@ -45,8 +45,7 @@ const Signup = () => {
       return;
     }
 
-
-    console.log('회원가입 정보', id, nickname, pw)
+    console.log("회원가입 정보", id, nickname, pw);
     axiosInstance
       .post(`/user/signup`, {
         username: id,
@@ -158,11 +157,6 @@ const Signup = () => {
 export default Signup;
 
 const SignupForm = styled.div`
-  //position: absolute;
-  //top: 50%;
-  //left: 50%;
-  //transform: translate(-50%, -50%);
-
   button {
     width: 300px;
     margin: 0 auto;
@@ -177,6 +171,7 @@ const Logo = styled.div`
   }
 `;
 
+//회원가입 폼
 const InputForm = styled.div`
   width: 300px;
   margin: 0 auto;
@@ -199,11 +194,12 @@ const InputForm = styled.div`
   }
 `;
 
+//사진 업로드 박스
 const UploadBox = styled.div`
   position: relative;
   width: 200px;
   margin: 0 auto;
-  
+
   .fileUpload {
     display: none;
   }
@@ -224,6 +220,7 @@ const Circle = styled.div`
   }
 `;
 
+//회원가입 등록 버튼
 const Btn = styled.div`
   width: 40px;
   height: 40px;
