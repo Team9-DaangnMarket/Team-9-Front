@@ -45,8 +45,10 @@ const Signup = () => {
       return;
     }
 
+
+    console.log('회원가입 정보', id, nickname, pw)
     axiosInstance
-      .post(`/api/signup`, {
+      .post(`/user/signup`, {
         username: id,
         nickname: nickname,
         password: pw,
@@ -156,14 +158,15 @@ const Signup = () => {
 export default Signup;
 
 const SignupForm = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  //position: absolute;
+  //top: 50%;
+  //left: 50%;
+  //transform: translate(-50%, -50%);
 
   button {
-    margin: 50px auto;
     width: 300px;
+    margin: 0 auto;
+    margin-top: 30px;
   }
 `;
 
@@ -183,8 +186,9 @@ const InputForm = styled.div`
     display: block;
     height: 40px;
     padding: 0px 8px;
-    margin: 25px 0 10px 0;
+    margin: 20px 0 10px 0;
     outline: none;
+    border-radius: 6px;
     border: 1px solid var(--sub-font-color);
   }
 
@@ -198,8 +202,8 @@ const InputForm = styled.div`
 const UploadBox = styled.div`
   position: relative;
   width: 200px;
-  margin: 50px auto;
-
+  margin: 0 auto;
+  
   .fileUpload {
     display: none;
   }
