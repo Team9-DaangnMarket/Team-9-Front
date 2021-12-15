@@ -16,6 +16,20 @@ const PostWrite = (props) => {
   const [content, setContent] = useState();
   const [preview, setPreview] = useState();
 
+    const handeTest = (e) => {
+    const file = e.target.files[0]
+    const storageRef = storage.ref(file.name);
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onloadend = () => {
+      storage.ref(`images/${file.name}`).putString(reader.result, 'data_url').then(function (snapshot) {
+        snapshot.ref.getDownloadURL().then(url => {
+          console.log('스냅샷 URL', url)
+        })
+      });
+    }
+  }
+  
   const fileInput = useRef();
 
   //upload file
