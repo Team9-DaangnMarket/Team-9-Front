@@ -1,50 +1,49 @@
-import React, { useState, useRef } from "react";
-import { axiosInstance } from "../shared/api";
-import { checkName, checkId, checkPw } from "../shared/Check";
-import styled from "styled-components";
-import { Grid, Button } from "../elements/index";
-import { FaCamera } from "react-icons/fa";
+import React, { useState, useRef } from 'react'
+import { axiosInstance } from '../shared/api'
+import { checkName, checkId, checkPw } from '../shared/Check'
+import styled from 'styled-components'
+import { Grid, Button } from '../elements/index'
+import { FaCamera } from 'react-icons/fa'
 
 const Signup = () => {
   //nickname, id, pwd
-  const [nickname, set_nickname] = useState("");
-  const [id, set_id] = useState("");
-  const [pw, set_pw] = useState("");
-  const [pwCheck, set_pwCheck] = useState("");
+  const [nickname, set_nickname] = useState('')
+  const [id, set_id] = useState('')
+  const [pw, set_pw] = useState('')
+  const [pwCheck, set_pwCheck] = useState('')
 
   //err message
-  const [err_nickname, setErr_nickname] = useState("");
-  const [err_id, setErr_id] = useState("");
-  const [err_pw, setErr_pw] = useState("");
-  const [err_pwCheck, setErr_pwCheck] = useState("");
+  const [err_nickname, setErr_nickname] = useState('')
+  const [err_id, setErr_id] = useState('')
+  const [err_pw, setErr_pw] = useState('')
+  const [err_pwCheck, setErr_pwCheck] = useState('')
 
   const signupBtn = () => {
-    if (nickname === "" || id === "" || pw === "" || pwCheck === "") {
-      window.alert("빈 공간을 채워주세요");
-      return;
+    if (nickname === '' || id === '' || pw === '' || pwCheck === '') {
+      window.alert('빈 공간을 채워주세요')
+      return
     }
 
     if (!checkName(nickname)) {
-      setErr_nickname("닉네임은 영문/숫자포함 최소3자 이상 10자 이하입니다");
-      return;
+      setErr_nickname('닉네임은 영문/숫자포함 최소3자 이상 10자 이하입니다')
+      return
     }
 
-    setErr_nickname("");
+    setErr_nickname('')
     if (!checkId(id)) {
-      setErr_id("아이디는 영문/숫자포함 최소 3자 이상 20자 이하입니다");
-      return;
+      setErr_id('아이디는 영문/숫자포함 최소 3자 이상 20자 이하입니다')
+      return
     }
-    setErr_id("");
+    setErr_id('')
     if (!checkPw(pw)) {
-      setErr_pw("비밀번호는 영문/숫자/특수문자 포함 최소 8자 최대20자입니다");
-      return;
+      setErr_pw('비밀번호는 영문/숫자/특수문자 포함 최소 8자 최대20자입니다')
+      return
     }
-    setErr_pw("");
+    setErr_pw('')
     if (pw !== pwCheck) {
-      setErr_pwCheck("비밀번호가 일치 하지 않습니다");
-      return;
+      setErr_pwCheck('비밀번호가 일치 하지 않습니다')
+      return
     }
-
 
     console.log('회원가입 정보', id, nickname, pw)
     axiosInstance
@@ -52,35 +51,35 @@ const Signup = () => {
         username: id,
         nickname: nickname,
         password: pw,
-        profileImg: "",
+        profileImg: '',
       })
       .then((res) => {
-        console.log(res);
-        window.alert("가입을 축하드려요!");
-        window.location.hef = "/login";
+        console.log(res)
+        window.alert('가입을 축하드려요!')
+        window.location.hef = '/login'
       })
       .catch((err) => {
-        console.log(`회원가입 오류 발생: ${err}`);
-      });
-  };
+        console.log(`회원가입 오류 발생: ${err}`)
+      })
+  }
 
   // upload profile pic
-  const fileInput = useRef();
-  const [preview, setPreview] = useState();
+  const fileInput = useRef()
+  const [preview, setPreview] = useState()
 
   const selectFile = () => {
-    const reader = new FileReader();
-    const file = fileInput.current.files[0];
-    reader.readAsDataURL(file);
+    const reader = new FileReader()
+    const file = fileInput.current.files[0]
+    reader.readAsDataURL(file)
     reader.onloadend = () => {
-      setPreview(reader.result);
-      console.log(reader.result);
-    };
-  };
+      setPreview(reader.result)
+      console.log(reader.result)
+    }
+  }
 
   const handleClick = () => {
-    fileInput.current.click();
-  };
+    fileInput.current.click()
+  }
 
   return (
     <>
@@ -88,29 +87,29 @@ const Signup = () => {
         <Grid is_container>
           {/* logo  */}
           <Logo>
-            <img src="assets/signup_logo.png" alt="logo" />
+            <img src='assets/signup_logo.png' alt='logo' />
           </Logo>
           {/* img upload */}
           <UploadBox>
             <Circle>
               <img
-                className="p_img"
+                className='p_img'
                 src={
                   preview
                     ? preview
-                    : "https://i.pinimg.com/564x/9b/0e/4d/9b0e4daa1870231d3a69b8d5a1bbd81a.jpg"
+                    : 'https://i.pinimg.com/564x/9b/0e/4d/9b0e4daa1870231d3a69b8d5a1bbd81a.jpg'
                 }
-                alt="user_img"
+                alt='user_img'
               />
             </Circle>
             <Btn>
-              <Button _onClick={handleClick} _className="uploadBtn">
+              <Button _onClick={handleClick} _className='uploadBtn'>
                 <FaCamera />
               </Button>
               <input
-                type="file"
-                className="fileUpload"
-                accept="image/*"
+                type='file'
+                className='fileUpload'
+                accept='image/*'
                 ref={fileInput}
                 onChange={selectFile}
               />
@@ -119,43 +118,43 @@ const Signup = () => {
           {/* signup Form */}
           <InputForm>
             <input
-              type="text"
-              placeholder="닉네임"
+              type='text'
+              placeholder='닉네임'
               onChange={(e) => set_nickname(e.target.value)}
             />
             {err_nickname && <p>{err_nickname}</p>}
 
             <input
-              type="text"
-              placeholder="아이디"
+              type='text'
+              placeholder='아이디'
               onChange={(e) => set_id(e.target.value)}
             />
             {err_id && <p>{err_id}</p>}
 
             <input
-              type="password"
-              placeholder="비밀번호"
+              type='password'
+              placeholder='비밀번호'
               onChange={(e) => set_pw(e.target.value)}
             />
             {err_pw && <p>{err_pw}</p>}
 
             <input
-              type="password"
-              placeholder="비밀번호 확인"
+              type='password'
+              placeholder='비밀번호 확인'
               onChange={(e) => set_pwCheck(e.target.value)}
             />
             {err_pwCheck && <p>{err_pwCheck}</p>}
           </InputForm>
-          <Button version={"orange"} _onClick={signupBtn}>
+          <Button version={'orange'} _onClick={signupBtn}>
             등록하기
           </Button>
         </Grid>
       </SignupForm>
     </>
-  );
-};
+  )
+}
 
-export default Signup;
+export default Signup
 
 const SignupForm = styled.div`
   //position: absolute;
@@ -168,14 +167,14 @@ const SignupForm = styled.div`
     margin: 0 auto;
     margin-top: 30px;
   }
-`;
+`
 
 const Logo = styled.div`
   margin: 0px 0;
   img {
     width: 100%;
   }
-`;
+`
 
 const InputForm = styled.div`
   width: 300px;
@@ -197,17 +196,17 @@ const InputForm = styled.div`
     font-size: 0.8em;
     padding-left: 5px;
   }
-`;
+`
 
 const UploadBox = styled.div`
   position: relative;
   width: 200px;
   margin: 0 auto;
-  
+
   .fileUpload {
     display: none;
   }
-`;
+`
 
 const Circle = styled.div`
   border-radius: 100% !important;
@@ -222,7 +221,7 @@ const Circle = styled.div`
     height: auto;
     object-fit: cover;
   }
-`;
+`
 
 const Btn = styled.div`
   width: 40px;
@@ -255,4 +254,4 @@ const Btn = styled.div`
       color: #999;
     }
   }
-`;
+`

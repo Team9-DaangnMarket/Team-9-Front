@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { Grid, Button, Input } from "../elements";
-import styled from "styled-components";
-import { GoSettings } from "react-icons/go";
-import { MdOutlinePostAdd } from "react-icons/md";
-import { BiArrowBack } from "react-icons/bi";
+import React, { useState } from 'react'
+import { Grid, Button, Input } from '../elements'
+import styled from 'styled-components'
+import { GoSettings } from 'react-icons/go'
+import { MdOutlinePostAdd } from 'react-icons/md'
+import { BiArrowBack } from 'react-icons/bi'
 
 const PostWrite = () => {
-  const [price, setPrice] = useState();
+  const [price, setPrice] = useState()
 
   const priceOnChange = (e) => {
-    setPrice(e.target.value);
-  };
+    setPrice(e.target.value)
+  }
 
   return (
     <>
@@ -18,22 +18,22 @@ const PostWrite = () => {
         <Grid is_container>
           <Grid
             is_flex
-            flex_align="center;"
-            flex_justify="space-between;"
-            _className="title"
+            flex_align='center;'
+            flex_justify='space-between;'
+            _className='title'
           >
             <p>
               <BiArrowBack />
             </p>
             <h3>중고거래 글쓰기</h3>
-            <Button _className="btn">완료</Button>
+            <Button _className='btn'>완료</Button>
           </Grid>
           <UploadBox>
-            <input type="file" />
+            <input type='file' />
           </UploadBox>
           <Grid>
             <Input
-              placeholder="글 제목"
+              placeholder='글 제목'
               _onChange={priceOnChange}
               value={price}
             />
@@ -59,23 +59,23 @@ const PostWrite = () => {
             </select>
           </SelectBox>
           <Grid is_flex>
-            <Input placeholder="\ 가격 (선택사항)" _className="price" />
-            <Grid _className="price-checkbox">
-              <label className="control control--checkbox">
+            <Input placeholder='\ 가격 (선택사항)' _className='price' />
+            <Grid _className='price-checkbox'>
+              <label className='control control--checkbox'>
                 가격 제안받기
-                <input type="checkbox" />
-                <div className="control__indicator"></div>
+                <input type='checkbox' />
+                <div className='control__indicator'></div>
               </label>
             </Grid>
           </Grid>
           <textarea
-            cols="20"
-            rows="30"
-            className="textarea"
-            type="textarea"
-            placeholder="자양동에 올릴 게시글 내용을 작성해주세요.(가품 및 판매금지품목은 게시가 제한될 수 있어요.)"
+            cols='20'
+            rows='30'
+            className='textarea'
+            type='textarea'
+            placeholder='자양동에 올릴 게시글 내용을 작성해주세요.(가품 및 판매금지품목은 게시가 제한될 수 있어요.)'
           />
-          <Grid is_flex flex_align="center;" _className="setting-icons">
+          <Grid is_flex flex_align='center;' _className='setting-icons'>
             <span>
               <MdOutlinePostAdd />
             </span>
@@ -88,10 +88,10 @@ const PostWrite = () => {
         </Grid>
       </WriteBox>
     </>
-  );
-};
+  )
+}
 
-export default PostWrite;
+export default PostWrite
 
 const WriteBox = styled.div`
   padding: 30px 0 50px 0;
@@ -147,7 +147,7 @@ const WriteBox = styled.div`
     }
 
     .control__indicator:after {
-      content: "";
+      content: '';
       position: absolute;
       display: none;
     }
@@ -184,7 +184,7 @@ const WriteBox = styled.div`
     border: 0;
     box-sizing: border-box;
     outline: 0;
-    font-family: "NanumSquareRound", serif;
+    font-family: 'NanumSquareRound', serif;
   }
 
   .setting-icons {
@@ -200,12 +200,12 @@ const WriteBox = styled.div`
       margin-right: 30px;
     }
   }
-`;
+`
 
 // 상품 사진 업로드
 const UploadBox = styled.div`
   margin: 30px 0;
-`;
+`
 
 //select 카테고리
 const SelectBox = styled.div`
@@ -216,6 +216,6 @@ const SelectBox = styled.div`
     border-right: 0;
     border-left: 0;
     outline: 0;
-    font-family: "NanumSquareRound", serif;
+    font-family: 'NanumSquareRound', serif;
   }
-`;
+`
