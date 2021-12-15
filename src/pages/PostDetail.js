@@ -21,7 +21,12 @@ const PostDetail = ({history}) => {
 
   // 디테일 상단바 색상 세팅 함수
   const handleHeaderPaint = () => {
-    const topBar = topBarRef.current
+    const topBar = topBarRef?.current
+
+    if (!topBar) {
+      return
+    }
+
     const current = window.pageYOffset
     const scrollHeight = getScrollHeight()
     const max = scrollHeight - document.documentElement.clientHeight
