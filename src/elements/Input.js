@@ -1,8 +1,8 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from "react";
+import styled from "styled-components";
 
 const Input = (props) => {
-  const { type, placeholder, _onChange, value, _className } = props
+  const { type, placeholder, _onChange, value, _className, max } = props;
   return (
     <InputForm>
       <input
@@ -11,12 +11,13 @@ const Input = (props) => {
         onChange={_onChange}
         defaultValue={value}
         className={_className}
+        maxLength={max}
       />
     </InputForm>
-  )
-}
+  );
+};
 
-export default Input
+export default Input;
 
 const InputForm = styled.div`
   input {
@@ -26,4 +27,4 @@ const InputForm = styled.div`
     height: 50px;
     outline: 0;
   }
-`
+`;
