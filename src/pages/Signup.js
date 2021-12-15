@@ -59,6 +59,7 @@ const Signup = () => {
         window.location.hef = "/login";
       })
       .catch((err) => {
+        setErr_id("사용할 수 없는 아이디 혹은 닉네임입니다");
         console.log(`회원가입 오류 발생: ${err}`);
       });
   };
