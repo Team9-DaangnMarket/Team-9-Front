@@ -1,5 +1,6 @@
 import {Route} from 'react-router-dom';
 import GlobalStyles from './GlobalStyles';
+import {storage} from '../shared/firebase'
 
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
@@ -9,8 +10,10 @@ import PostDetail from '../pages/PostDetail';
 import LikeList from '../pages/LikeList';
 
 function App() {
+
   return (
       <>
+        <input type="file" onChange={handeTest}/>
         <GlobalStyles/>
         <Route path="/" component={PostList} exact/>
         <Route path="/login" component={Login} exact/>

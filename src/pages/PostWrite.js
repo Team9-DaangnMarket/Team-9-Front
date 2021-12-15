@@ -6,6 +6,21 @@ import { MdOutlinePostAdd } from "react-icons/md";
 import { BiArrowBack } from "react-icons/bi";
 
 const PostWrite = () => {
+
+  const handeTest = (e) => {
+    const file = e.target.files[0]
+    const storageRef = storage.ref(file.name);
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onloadend = () => {
+      storage.ref(`images/${file.name}`).putString(reader.result, 'data_url').then(function (snapshot) {
+        snapshot.ref.getDownloadURL().then(url => {
+          console.log('스냅샷 URL', url)
+        })
+      });
+    }
+  }
+
   const [price, setPrice] = useState();
 
   const priceOnChange = (e) => {
