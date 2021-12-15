@@ -83,9 +83,9 @@ const PostDetail = ({history}) => {
     setOptModal(false)
   }
 
-  const handleClickModifyBtn = (e) => {
-    e.stopPropagation()
+  const handleClickModifyBtn = (post_id) => {
     setOptModal(false)
+    history.push(`/write/${post_id}`)
   }
 
   const handleCloseOptModal = (e) => {
@@ -193,7 +193,7 @@ const PostDetail = ({history}) => {
                             opt_modal_open
                             && (
                                 <div className={`opt-modal`}>
-                                  <div type={'button'} className={'opt-btn'} onClick={handleClickModifyBtn}>수정</div>
+                                  <div type={'button'} className={'opt-btn'} onClick={() => handleClickModifyBtn(detail_data.postId)}>수정</div>
                                   <div type={'button'} className={'opt-btn'} onClick={() => handleClickRemoveBtn(detail_data.postId)}>삭제</div>
                                 </div>
                             )
