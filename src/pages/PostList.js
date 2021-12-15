@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import PostItem from '../components/PostItem'
 
@@ -19,39 +19,15 @@ import {
 import { axiosInstance } from '../shared/api'
 
 const PostList = (props) => {
-  const list = [
-    {
-      postId: 26,
-      username: 'aaazz11',
-      nickname: 'zxcv',
-      title: '4번째 내꺼',
-      price: 12345,
-      goodsImg: 'asdfqwer',
-      postLikes: 2,
-    },
-    {
-      postId: 25,
-      username: 'aaaa',
-      nickname: 'babooo',
-      title: '시간형식체크2',
-      price: 12345,
-      goodsImg: 'asdfqwer',
-      postLikes: 0,
-    },
-  ]
-  const apiTest = async () => {
-    const res = await axiosInstance.get(
-      'http://15.164.171.227/posts?page=0&size=2'
-    )
-    console.log('로그인 성공', res)
-  }
-  apiTest()
+  const [_post, set_Post] = useState()
 
-  // useEffect(() => {
-  //   axiosInstance
-  //     .get('http://15.164.171.227/posts?page=0&size=2')
-  //     .then((res) => console.log(res))
-  // }, [])
+  useEffect(() => {
+    axiosInstance
+      .get('http://15.164.171.227/posts?page=0&size=20')
+      .then((res) => {
+        set_Post(res.data)
+      })
+  }, [])
   return (
     <div>
       <MenuTop>
@@ -80,9 +56,10 @@ const PostList = (props) => {
 
       <PostListBx>
         <Grid is_container>
-          {list.map((a, b) => {
-            return <PostItem list={a}></PostItem>
-          })}
+          {_post &&
+            _post.map((a, b) => {
+              return <PostItem list={a} key={a.postId}></PostItem>
+            })}
         </Grid>
       </PostListBx>
 
