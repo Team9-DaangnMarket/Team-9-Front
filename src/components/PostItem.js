@@ -22,7 +22,11 @@ const PostItem = (props) => {
   }
 
   return (
-    <ItemBox>
+    <ItemBox
+      onClick={() => {
+        history.push(`/detail/${props.list.postId}`)
+      }}
+    >
       <div className={'item-top'}>
         <div className={'item-img'} onClick={handleClickGoDetail}>
           <img
@@ -33,7 +37,7 @@ const PostItem = (props) => {
         <div className={'item-detail'} onClick={handleClickGoDetail}>
           <strong className={'subject'}>{props.list.title}</strong>
           <span className={'area'}>서초동</span>
-          <span className={'price'}>{comma(60000)}원</span>
+          <span className={'price'}>{comma(`${props.list.price}`)}원</span>
         </div>
         {pathname === '/likelist' && (
           <div className={'opt-group'}>
@@ -51,7 +55,7 @@ const PostItem = (props) => {
         </div>
         <div className={'icon-box'}>
           <AiOutlineHeart />
-          <span>1</span>
+          <span>{props.list.postLikes}</span>
         </div>
       </div>
     </ItemBox>

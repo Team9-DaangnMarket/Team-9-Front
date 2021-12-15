@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { axiosInstance } from "../shared/api";
 import { storage } from "../shared/firebase";
+import { history } from "../redux/configureStore";
 import { checkName, checkId, checkPw } from "../shared/Check";
 import styled from "styled-components";
 import { Grid, Button } from "../elements/index";
@@ -8,10 +9,10 @@ import { FaCamera } from "react-icons/fa";
 
 const Signup = () => {
   //nickname, id, pwd
-  const [nickname, set_nickname] = useState('')
-  const [id, set_id] = useState('')
-  const [pw, set_pw] = useState('')
-  const [pwCheck, set_pwCheck] = useState('')
+  const [nickname, set_nickname] = useState("");
+  const [id, set_id] = useState("");
+  const [pw, set_pw] = useState("");
+  const [pwCheck, set_pwCheck] = useState("");
 
   //err message
   const [err_nickname, setErr_nickname] = useState("");
@@ -23,6 +24,8 @@ const Signup = () => {
   const [err_namedouble, setErr_namedouble] = useState("");
   const [double_btn, setDouble_btn] = useState(true);
 
+  //disabled btn
+  const [disBtn, setDisBtn] = useState(true);
 
   // upload profile pic
   const fileInput = useRef();
@@ -57,50 +60,57 @@ const Signup = () => {
   };
 
   //아이디, 닉네임 중복확인 버튼
+  //axios source
   const iddoubleChek = () => {
+    // axiosInstance
+    //   .post(`/user/checkId`, id)
+    //   .then((res) => console.log(res))
+    //   .catch((err) => {
+    //     console.log(err);
     setErr_iddouble(true);
+    //   });
   };
   const namedoubleChek = () => {
+    // axiosInstance
+    //   .post(`/user/checkNickname`, nickname)
+    //   .then((res) => console.log(res))
+    //   .catch((err) => {
+    //     console.log(err);
     setErr_namedouble(true);
+    //   });
   };
 
   //회원가입 버튼
   const signupBtn = () => {
-    if (
-      nickname === "" ||
-      id === "" ||
-      pw === "" ||
-      pwCheck === "" ||
-      preview === ""
-    ) {
-      setErr_("빈 공간을 채워주세요");
+    if (nickname === "" || id === "" || pw === "" || pwCheck === "") {
+      setDisBtn(false);
       return;
     }
+    //초기화시키는 것
     setErr_("");
     if (!checkName(nickname)) {
-      setErr_nickname('닉네임은 영문/숫자포함 최소3자 이상 10자 이하입니다')
-      return
+      setErr_nickname("닉네임은 영문/숫자포함 최소3자 이상 10자 이하입니다");
+      return;
     }
 
-    setErr_nickname('')
+    setErr_nickname("");
     if (!checkId(id)) {
-      setErr_id('아이디는 영문/숫자포함 최소 3자 이상 20자 이하입니다')
-      return
+      setErr_id("아이디는 영문/숫자포함 최소 3자 이상 20자 이하입니다");
+      return;
     }
-    setErr_id('')
+    setErr_id("");
     if (!checkPw(pw)) {
-      setErr_pw('비밀번호는 영문/숫자/특수문자 포함 최소 8자 최대20자입니다')
-      return
+      setErr_pw("비밀번호는 영문/숫자/특수문자 포함 최소 8자 최대20자입니다");
+      return;
     }
-    setErr_pw('')
+    setErr_pw("");
     if (pw !== pwCheck) {
-      setErr_pwCheck('비밀번호가 일치 하지 않습니다')
-      return
+      setErr_pwCheck("비밀번호가 일치 하지 않습니다");
+      return;
     }
     //prifile img upload
     handleUpload(preview);
-
-
+    //로그인 값 넘기는 것
     axiosInstance
       .post(`/user/signup`, {
         username: id,
@@ -109,15 +119,16 @@ const Signup = () => {
         profileImg: img_url,
       })
       .then((res) => {
-        console.log(res)
-        window.alert('가입을 축하드려요!')
-        window.location.hef = '/login'
+        console.log(res);
+        window.alert("가입을 축하드려요!");
+        window.location.hef = "/login";
       })
       .catch((err) => {
-
         setErr_("사용할 수 없는 아이디 혹은 닉네임입니다");
         console.log(`회원가입 오류 발생: ${err}`);
       });
+
+    history.push("/login");
   };
 
   return (
@@ -126,29 +137,29 @@ const Signup = () => {
         <Grid is_container>
           {/* logo  */}
           <Logo>
-            <img src='assets/signup_logo.png' alt='logo' />
+            <img src="assets/signup_logo.png" alt="logo" />
           </Logo>
           {/* img upload */}
           <UploadBox>
             <Circle>
               <img
-                className='p_img'
+                className="p_img"
                 src={
                   preview
                     ? preview
                     : "https://i.pinimg.com/236x/a7/35/bc/a735bc244c696f41a450bc358a027f18--free-wooden-pallets--pallets.jpg"
                 }
-                alt='user_img'
+                alt="user_img"
               />
             </Circle>
             <Btn>
-              <Button _onClick={handleClick} _className='uploadBtn'>
+              <Button _onClick={handleClick} _className="uploadBtn">
                 <FaCamera />
               </Button>
               <input
-                type='file'
-                className='fileUpload'
-                accept='image/*'
+                type="file"
+                className="fileUpload"
+                accept="image/*"
                 ref={fileInput}
                 onChange={selectFile}
               />
@@ -198,45 +209,48 @@ const Signup = () => {
             {err_iddouble && <p>중복된 아이디입니다</p>}
 
             <input
-              type='password'
-              placeholder='비밀번호'
+              type="password"
+              placeholder="비밀번호"
               onChange={(e) => set_pw(e.target.value)}
             />
             {err_pw && <p>{err_pw}</p>}
 
             <input
-              type='password'
-              placeholder='비밀번호 확인'
+              type="password"
+              placeholder="비밀번호 확인"
               onChange={(e) => set_pwCheck(e.target.value)}
             />
             {err_pwCheck && <p>{err_pwCheck}</p>}
             {err_ && <p>{err_}</p>}
           </InputForm>
-          <Button version={'orange'} _onClick={signupBtn}>
+          <Button version={"orange"} _onClick={signupBtn} disabled={disBtn}>
             등록하기
           </Button>
         </Grid>
       </SignupForm>
     </>
-  )
-}
+  );
+};
 
-export default Signup
+export default Signup;
 
 const SignupForm = styled.div`
   button {
     width: 300px;
     margin: 0 auto;
     margin-top: 30px;
+    &:disabled {
+      opacity: 0.6;
+    }
   }
-`
+`;
 
 const Logo = styled.div`
   margin: 0px 0;
   img {
     width: 100%;
   }
-`
+`;
 
 //회원가입 폼
 const InputForm = styled.div`
@@ -280,7 +294,7 @@ const InputForm = styled.div`
     font-size: 0.8em;
     padding-left: 5px;
   }
-`
+`;
 
 //사진 업로드 박스
 const UploadBox = styled.div`
@@ -291,7 +305,7 @@ const UploadBox = styled.div`
   .fileUpload {
     display: none;
   }
-`
+`;
 
 const Circle = styled.div`
   border-radius: 100% !important;
@@ -306,7 +320,7 @@ const Circle = styled.div`
     height: auto;
     object-fit: cover;
   }
-`
+`;
 
 //회원가입 등록 버튼
 const Btn = styled.div`
@@ -340,4 +354,4 @@ const Btn = styled.div`
       color: #999;
     }
   }
-`
+`;

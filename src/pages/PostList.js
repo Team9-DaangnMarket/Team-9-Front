@@ -58,12 +58,15 @@ const PostList = (props) => {
     setListData(list);
     setTimeout(() => setIsLoading(false), 2500);
   }, [])
+  const [_post, set_Post] = useState()
 
-  // useEffect(() => {
-  //   axiosInstance
-  //     .get('http://15.164.171.227/posts?page=0&size=2')
-  //     .then((res) => console.log(res))
-  // }, [])
+  useEffect(() => {
+    axiosInstance
+      .get('http://15.164.171.227/posts?page=0&size=20')
+      .then((res) => {
+        set_Post(res.data)
+      })
+  }, [])
   return (
       <div>
         <MenuTop>
@@ -124,6 +127,60 @@ const PostList = (props) => {
           </Grid>
         </MenuBottom>
       </div>
+    <div>
+      <MenuTop>
+        <Grid is_container>
+          <div className='nav-top-bx'>
+            <h2>
+              동동동
+              <MdOutlineKeyboardArrowDown className='arrow-down' />
+            </h2>
+            <Grid is_container _className='top-btns'>
+              <button>
+                <HiOutlineSearch />
+              </button>
+
+              <button>
+                <MdOutlineMenu />
+              </button>
+
+              <button>
+                <HiOutlineBell />
+              </button>
+            </Grid>
+          </div>
+        </Grid>
+      </MenuTop>
+
+      <PostListBx>
+        <Grid is_container>
+          {_post &&
+            _post.map((a, b) => {
+              return <PostItem list={a} key={a.postId}></PostItem>
+            })}
+        </Grid>
+      </PostListBx>
+
+      <MenuBottom>
+        <Grid _className='btn-bx' is_container>
+          <button type='button' className='btns'>
+            <TiHome />
+          </button>
+          <button type='button' className='btns'>
+            <BiReceipt />
+          </button>
+          <button type='button' className='btns'>
+            <HiOutlineLocationMarker />
+          </button>
+          <button type='button' className='btns'>
+            <RiWechatLine />
+          </button>
+          <button type='button' className='btns'>
+            <FiUser />
+          </button>
+        </Grid>
+      </MenuBottom>
+    </div>
   )
 }
 
