@@ -229,7 +229,7 @@ const PostDetail = ({history}) => {
                     alt={''}
                 />
                 <div className={'user-info'}>
-                  <div className={'user-name'}>{detail_data.username}</div>
+                  <div className={'user-name'}>{detail_data.nickname}</div>
                   <div className={'user-area'}>서초동</div>
                 </div>
               </div>
