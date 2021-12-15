@@ -7,6 +7,7 @@ import Signup from "../pages/Signup";
 import PostList from "../pages/PostList";
 import PostWrite from "../pages/PostWrite";
 import PostDetail from "../pages/PostDetail";
+import LikeList from "../pages/LikeList";
 
 function App() {
 
