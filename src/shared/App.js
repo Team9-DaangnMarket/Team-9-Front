@@ -6,7 +6,7 @@ import Signup from '../pages/Signup'
 import PostList from '../pages/PostList'
 import PostWrite from '../pages/PostWrite'
 import PostDetail from '../pages/PostDetail'
-// import LikeList from '../pages/LikeList';
+import LikeList from '../pages/LikeList'
 
 function App() {
   return (
@@ -15,9 +15,10 @@ function App() {
       <Route path='/' component={PostList} exact />
       <Route path='/login' component={Login} exact />
       <Route path='/signup' component={Signup} exact />
-      <Route path='/detail' component={PostDetail} exact />
+      <Route path='/detail/:post_id' component={PostDetail} exact />
       <Route path='/write' component={PostWrite} exact />
-      {/* <Route path="/likelist" component={LikeList} exact/> */}
+      <Route path='/write/:post_id' component={PostWrite} exact />
+      <Route path='/likelist' component={LikeList} exact />
     </>
   )
 }
