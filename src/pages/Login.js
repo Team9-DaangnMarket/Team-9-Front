@@ -123,10 +123,6 @@ const Wrap = styled.div`
     width: 300px;
     margin: 0 auto;
     margin-top: 30px;
-    &:disabled {
-      cursor: default;
-      opacity: 0.7;
-    }
   }
   .process_login {
     font-size: 13.3px;

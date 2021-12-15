@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import PostItem from '../components/PostItem'
 
@@ -16,7 +16,42 @@ import {
   HiOutlineBell,
 } from 'react-icons/hi'
 
-const PostList = () => {
+import { axiosInstance } from '../shared/api'
+
+const PostList = (props) => {
+  const list = [
+    {
+      postId: 26,
+      username: 'aaazz11',
+      nickname: 'zxcv',
+      title: '4번째 내꺼',
+      price: 12345,
+      goodsImg: 'asdfqwer',
+      postLikes: 2,
+    },
+    {
+      postId: 25,
+      username: 'aaaa',
+      nickname: 'babooo',
+      title: '시간형식체크2',
+      price: 12345,
+      goodsImg: 'asdfqwer',
+      postLikes: 0,
+    },
+  ]
+  const apiTest = async () => {
+    const res = await axiosInstance.get(
+      'http://15.164.171.227/posts?page=0&size=2'
+    )
+    console.log('로그인 성공', res)
+  }
+  apiTest()
+
+  // useEffect(() => {
+  //   axiosInstance
+  //     .get('http://15.164.171.227/posts?page=0&size=2')
+  //     .then((res) => console.log(res))
+  // }, [])
   return (
     <div>
       <MenuTop>
@@ -45,19 +80,9 @@ const PostList = () => {
 
       <PostListBx>
         <Grid is_container>
-          <PostItem></PostItem>
-          <PostItem></PostItem>
-          <PostItem></PostItem>
-          <PostItem></PostItem>
-          <PostItem></PostItem>
-          <PostItem></PostItem>
-          <PostItem></PostItem>
-          <PostItem></PostItem>
-          <PostItem></PostItem>
-          <PostItem></PostItem>
-          <PostItem></PostItem>
-          <PostItem></PostItem>
-          <PostItem></PostItem>
+          {list.map((a, b) => {
+            return <PostItem list={a}></PostItem>
+          })}
         </Grid>
       </PostListBx>
 

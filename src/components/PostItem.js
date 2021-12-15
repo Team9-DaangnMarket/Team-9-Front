@@ -7,7 +7,8 @@ import { history } from '../redux/configureStore'
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 import { IoChatbubblesOutline } from 'react-icons/io5'
 
-const PostItem = () => {
+const PostItem = (props) => {
+  console.log(props)
   const location = useLocation()
   const { pathname } = location
   const [heart_on, setHeartOn] = useState(false)
@@ -30,10 +31,7 @@ const PostItem = () => {
           />
         </div>
         <div className={'item-detail'} onClick={handleClickGoDetail}>
-          <strong className={'subject'}>
-            반석 로잉머신반석 로잉머신반석 로잉머신반석 로잉머신반석
-            로잉머신반석 로잉머신반석 로잉머신
-          </strong>
+          <strong className={'subject'}>{props.list.title}</strong>
           <span className={'area'}>서초동</span>
           <span className={'price'}>{comma(60000)}원</span>
         </div>

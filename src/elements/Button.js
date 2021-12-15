@@ -21,7 +21,7 @@ export default Button
 const ButtonEl = styled.button`
   cursor: pointer;
   width: 120px;
-  height: 40px
+  height: 40px;
   border: 1px solid #d1d3d8;
   border-radius: 6px;
   display: flex;
