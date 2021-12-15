@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { useParams } from 'react-router-dom'
+import {useParams} from 'react-router-dom'
 import styled from 'styled-components';
 import {comma, getScrollHeight, copyUrlToClip} from '../shared/util'
-import { axiosInstance } from '../shared/api'
+import {axiosInstance} from '../shared/api'
 
 import {Grid, Button} from '../elements';
 import {BiArrowBack, BiHomeAlt, BiDotsVerticalRounded} from 'react-icons/bi';
@@ -10,7 +10,7 @@ import {BsShare} from 'react-icons/bs';
 import {AiFillHeart} from 'react-icons/ai';
 import OtherPost from '../components/OtherPost';
 
-const PostDetail = ({ history }) => {
+const PostDetail = ({history}) => {
   console.log('[PostDetail]')
   const params = useParams()
   const topBarRef = useRef(null)
@@ -18,7 +18,6 @@ const PostDetail = ({ history }) => {
   const [opt_modal_open, setOptModal] = useState(false)
   const [detail_data, setDetailData] = useState(null)
   const [alt_data, setAltData] = useState(null)
-  console.log('디테일 정보 초기값: ', detail_data)
 
   // 디테일 상단바 색상 세팅 함수
   const handleHeaderPaint = () => {
@@ -65,8 +64,22 @@ const PostDetail = ({ history }) => {
     setOptModal(true)
   }
 
-  const handleClickRemoveBtn = (e) => {
-    e.stopPropagation()
+  const sendDeletePost = async (post_id) => {
+    const delete_confirm = window.confirm('정말로 삭제하시겠습니까?')
+    if (delete_confirm) {
+      try {
+        const res = await axiosInstance.delete(`/posts/${post_id}`)
+        console.log('데이터 삭제 성공', res)
+        window.location.href = '/'
+      } catch (err) {
+        alert('삭제 할 수 없습니다 :(')
+        console.log('데이터 삭제 실패', err.response)
+      }
+    }
+  }
+
+  const handleClickRemoveBtn = (post_id) => {
+    sendDeletePost(post_id)
     setOptModal(false)
   }
 
@@ -85,6 +98,7 @@ const PostDetail = ({ history }) => {
 
   const fetchDetailData = async () => {
     try {
+      console.log('params id', params.post_id)
       const res = await axiosInstance.get(`/posts/${params.post_id}`)
       setDetailData(res.data)
       console.log('상세 데이터 조회 성공', res)
@@ -123,8 +137,6 @@ const PostDetail = ({ history }) => {
 
 
   if (!detail_data) {
-    console.log('대체 화면')
-
     return (
         <DetailWrap>
           <nav className={'detail-nav off'} ref={topBarRef}>
@@ -171,18 +183,25 @@ const PostDetail = ({ history }) => {
               <button type={'button'} className={'share-btn'} onClick={handleClickCopyUrl}>
                 <BsShare/>
               </button>
-              <button type={'button'} className={'more-btn'} onClick={handleOpenOtpModal}>
-                <BiDotsVerticalRounded className={'more-icon'}/>
-                {
-                    opt_modal_open
-                    && (
-                        <div className={`opt-modal`}>
-                          <div type={'button'} className={'opt-btn'} onClick={handleClickModifyBtn}>수정</div>
-                          <div type={'button'} className={'opt-btn'} onClick={handleClickRemoveBtn}>삭제</div>
-                        </div>
-                    )
-                }
-              </button>
+
+              {
+                true // 로그인 아이디와 작성자가 같을 경우
+                  && (
+                      <button type={'button'} className={'more-btn'} onClick={handleOpenOtpModal}>
+                        <BiDotsVerticalRounded className={'more-icon'}/>
+                        {
+                            opt_modal_open
+                            && (
+                                <div className={`opt-modal`}>
+                                  <div type={'button'} className={'opt-btn'} onClick={handleClickModifyBtn}>수정</div>
+                                  <div type={'button'} className={'opt-btn'} onClick={() => handleClickRemoveBtn(detail_data.postId)}>삭제</div>
+                                </div>
+                            )
+                        }
+                      </button>
+                  )
+              }
+
             </div>
           </Grid>
         </nav>
@@ -288,29 +307,29 @@ const DetailWrap = styled.section`
     border-bottom: 1px solid hsl(0deg 0% 0% / 0%);
     background-color: hsl(0deg 0% 100% / 0%);
     color: hsl(0deg 0% 100%);
-    
+
     &.off {
       border-bottom: 1px solid hsl(0deg 0% 0% / 4%) !important;
       background-color: #fff !important;
       color: var(--main-font-color) !important;
     }
   }
-  
+
   .not-exist-post {
     padding-top: 56px;
-    
+
     .guide-txt {
       text-align: center;
       padding: 80px 0;
     }
-    
+
     .alt-title {
       font-size: 18px;
       margin-bottom: 10px;
     }
-    
+
     .alt-list {
-      
+
     }
   }
 
@@ -451,7 +470,7 @@ const DetailWrap = styled.section`
         font-weight: bold;
         text-decoration: underline;
         color: #ccc;
-        
+
         &.on {
           color: var(--point-color);
         }
@@ -529,7 +548,7 @@ const DetailWrap = styled.section`
         display: flex;
         align-items: center;
         margin-bottom: 2px;
-        
+
         &.face-1 {
           .rating-num {
             color: #1c466e;
