@@ -9,7 +9,7 @@ const Input = (props) => {
         type={type}
         placeholder={placeholder}
         onChange={_onChange}
-        value={value}
+        defaultValue={value}
         className={_className}
       />
     </InputForm>

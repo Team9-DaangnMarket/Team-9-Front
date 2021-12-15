@@ -1,20 +1,59 @@
-import React, { useState, useRef } from 'react'
-import { Grid, Button, Input } from '../elements'
-import { axiosInstance } from '../shared/api'
-import { dummyCate } from '../shared/util'
-import styled from 'styled-components'
-import { GoSettings } from 'react-icons/go'
-import { MdOutlinePostAdd, MdOutlineClose } from 'react-icons/md'
-import { BiArrowBack } from 'react-icons/bi'
-import { FaChevronRight, FaCamera } from 'react-icons/fa'
+import React, { useState, useRef, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { Grid, Button, Input } from "../elements";
+//import { axiosInstance } from "../shared/api";
+import axios from "axios";
+import { storage } from "../shared/firebase";
+import { dummyCate } from "../shared/util";
+import styled from "styled-components";
+import { GoSettings } from "react-icons/go";
+import { MdOutlinePostAdd, MdOutlineClose } from "react-icons/md";
+import { BiArrowBack } from "react-icons/bi";
+import { FaChevronRight, FaCamera } from "react-icons/fa";
 
 const PostWrite = (props) => {
-  const [title, setTitle] = useState('')
-  const [price, setPrice] = useState('')
-  const [isOpen, setIsOpen] = useState(false)
-  const [cate, setCate] = useState('카테고리')
-  const [content, setContent] = useState()
-  const [preview, setPreview] = useState()
+  //edit
+  const { post_id } = useParams();
+  const [_post, set_Post] = useState();
+
+  //token
+  const apiTest = async () => {
+    const res = await axios.get(
+      "https://02b31898-fcda-4a5f-8828-8f70ebbd5e94.mock.pstmn.io/login"
+    );
+    console.log("로그인 성공", res.data.token);
+    localStorage.setItem("token", JSON.stringify(res.data.token));
+  };
+  apiTest();
+
+  //edit
+  const token = JSON.parse(localStorage.getItem("token"));
+  useEffect(() => {
+    if (!token) {
+      window.alert("Login first plz");
+      return;
+    }
+    if (post_id) {
+      axios
+        .get(
+          `https://02b31898-fcda-4a5f-8828-8f70ebbd5e94.mock.pstmn.io/posts/${post_id}`
+        )
+        .then((res) => {
+          console.log(res.data);
+          set_Post(res.data);
+        });
+    }
+  }, []);
+
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [cate, setCate] = useState("카테고리");
+  const [content, setContent] = useState("");
+  const [preview, setPreview] = useState("");
+  const [img_url, setImg_url] = useState();
+  const user_id = "me";
+
 
   const fileInput = useRef()
 
@@ -24,10 +63,23 @@ const PostWrite = (props) => {
     const file = fileInput.current.files[0]
     reader.readAsDataURL(file)
     reader.onloadend = () => {
-      setPreview(reader.result)
-      console.log(reader.result)
-    }
-  }
+      setPreview(reader.result);
+    };
+  };
+
+
+  const handleUpload = (file) => {
+    const storageRef = storage.ref(file.name);
+    storage
+      .ref(`images/${user_id}_${new Date().getTime()}`)
+      .putString(file, "data_url")
+      .then(function (snapshot) {
+        snapshot.ref.getDownloadURL().then((url) => {
+          console.log("스냅샷 URL", url);
+          setImg_url(url);
+        });
+      });
+  };
 
   const handleClick = () => {
     fileInput.current.click()
@@ -49,35 +101,26 @@ const PostWrite = (props) => {
   }
 
   const addPost = () => {
-    console.log(title, cate, price, content)
-    if (!title || !content || !price || !cate === '카테고리') {
-      window.alert('빈 공간을 채워주세요!')
-      return
-    }
 
+    // console.log(title, cate, price, content);
+    // if (!title || !content || !price || !cate === "카테고리") {
+    //   window.alert("빈 공간을 채워주세요!");
+    //   return;
+    // }
+    handleUpload(preview);
     //axios
-    let token = 'hello'
-    axiosInstance
-      .post(
-        '/posts',
-        {
-          title: title,
-          content: content,
-          price: price,
-          goodsImg: '',
-          //negocheck price 들어가면 무조건 true값
-          negoCheck: true,
-          category: cate,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err))
-  }
+    // axiosInstance
+    //   .post("/posts", {
+    //     title: title,
+    //     content: content,
+    //     price: price,
+    //     goodsImg: img_url,
+    //     negoCheck: true,
+    //     category: cate,
+    //   })
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.log(err));
+  };
 
   return (
     <>
@@ -124,7 +167,7 @@ const PostWrite = (props) => {
             <Input
               placeholder='글 제목'
               _onChange={titleOnChange}
-              value={title}
+              value={_post?.title}
             />
           </Grid>
           <SelectBox>
@@ -139,16 +182,17 @@ const PostWrite = (props) => {
                 <Modal>
                   <div className='shadow'></div>
                   <ul>
-                    {dummyCate.map((cate, i) => {
+                    {dummyCate.map((c, i) => {
                       return (
                         <>
                           <li
                             onClick={() => {
-                              setIsOpen(false)
-                              setCate(`${cate}`)
+
+                              setIsOpen(false);
+                              setCate(`${c}`);
                             }}
                           >
-                            {cate}
+                            {c}
                           </li>
                         </>
                       )
@@ -165,10 +209,10 @@ const PostWrite = (props) => {
                 placeholder='가격 (선택사항)'
                 _className='price'
                 _onChange={priceOnChange}
-                value={price || ''}
-              >
-                {price}
-              </Input>
+
+                value={_post?.price}
+              ></Input>
+
             </Grid>
 
             <Grid _className='price-checkbox'>
@@ -184,11 +228,14 @@ const PostWrite = (props) => {
             </Grid>
           </Grid>
           <textarea
-            cols='20'
-            rows='30'
-            className='textarea'
-            type='textarea'
-            placeholder='자양동에 올릴 게시글 내용을 작성해주세요.(가품 및 판매금지품목은 게시가 제한될 수 있어요.)'
+
+            cols="20"
+            rows="30"
+            value={_post?.content}
+            className="textarea"
+            type="textarea"
+            placeholder="자양동에 올릴 게시글 내용을 작성해주세요.(가품 및 판매금지품목은 게시가 제한될 수 있어요.)"
+
             onChange={(e) => {
               setContent(e.target.value)
             }}

@@ -21,8 +21,8 @@ const Login = () => {
     console.log('로그인')
     axiosInstance
       .post(`/user/login`, {
-        // username: id,
-        // password: pw,
+        username: "minmin",
+        password: "min123!@#",
       })
       .then((res) => {
         console.log(res)
@@ -32,6 +32,7 @@ const Login = () => {
         console.log(`로그인 오류 발생: ${err}`)
       })
   }
+
 
   useEffect(() => {
     if (input_values.user_id !== '' && input_values.user_pw !== '') {
