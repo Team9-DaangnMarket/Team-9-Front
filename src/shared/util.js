@@ -17,8 +17,8 @@ export const getScrollHeight = () => {
 }
 
 export const copyUrlToClip = () => {
-  const dummy   = document.createElement("input");
-  const text    = window.location.href;
+  const dummy = document.createElement("input");
+  const text = window.location.href;
   document.body.appendChild(dummy);
   dummy.value = text;
   dummy.select();

@@ -1,3 +1,4 @@
+
 import { Route } from "react-router-dom";
 import GlobalStyles from "./GlobalStyles";
 
@@ -8,6 +9,7 @@ import PostWrite from "../pages/PostWrite";
 import PostDetail from "../pages/PostDetail";
 
 function App() {
+
   return (
       <>
         <GlobalStyles/>
