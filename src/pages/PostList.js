@@ -1,24 +1,63 @@
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import PostItem from '../components/PostItem'
 
-import { Grid } from '../elements'
+import {Grid} from '../elements'
 
-import { TiHome } from 'react-icons/ti'
-import { BiReceipt } from 'react-icons/bi'
-import { RiWechatLine } from 'react-icons/ri'
-import { FiUser } from 'react-icons/fi'
-import { MdOutlineMenu } from 'react-icons/md'
-import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
+import {TiHome} from 'react-icons/ti'
+import {BiReceipt} from 'react-icons/bi'
+import {RiWechatLine} from 'react-icons/ri'
+import {FiUser} from 'react-icons/fi'
+import {MdOutlineMenu} from 'react-icons/md'
+import {MdOutlineKeyboardArrowDown} from 'react-icons/md'
 import {
   HiOutlineLocationMarker,
   HiOutlineSearch,
   HiOutlineBell,
 } from 'react-icons/hi'
 
-import { axiosInstance } from '../shared/api'
+import Skeleton from '../components/skeleton/Skeleton'
+
+import {axiosInstance} from '../shared/api'
 
 const PostList = (props) => {
+  const list = [
+    {
+      postId: 26,
+      username: 'aaazz11',
+      nickname: 'zxcv',
+      title: '4번째 내꺼',
+      price: 12345,
+      goodsImg: 'asdfqwer',
+      postLikes: 2,
+    },
+    {
+      postId: 25,
+      username: 'aaaa',
+      nickname: 'babooo',
+      title: '시간형식체크2',
+      price: 12345,
+      goodsImg: 'asdfqwer',
+      postLikes: 0,
+    },
+  ]
+  // const apiTest = async () => {
+  //   const res = await axiosInstance.get(
+  //       'http://15.164.171.227/posts?page=0&size=2'
+  //   )
+  //   console.log('로그인 성공', res)
+  // }
+  // apiTest()
+
+  const [listData, setListData] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+
+  // 스켈레톤 로딩 테스트 코드
+  useEffect(() => {
+    setIsLoading(true)
+    setListData(list);
+    setTimeout(() => setIsLoading(false), 2500);
+  }, [])
   const [_post, set_Post] = useState()
 
   useEffect(() => {
@@ -29,6 +68,65 @@ const PostList = (props) => {
       })
   }, [])
   return (
+      <div>
+        <MenuTop>
+          <Grid is_container>
+            <div className='nav-top-bx'>
+              <h2>
+                동동동
+                <MdOutlineKeyboardArrowDown className='arrow-down'/>
+              </h2>
+              <Grid is_container _className='top-btns'>
+                <button>
+                  <HiOutlineSearch/>
+                </button>
+
+                <button>
+                  <MdOutlineMenu/>
+                </button>
+
+                <button>
+                  <HiOutlineBell/>
+                </button>
+              </Grid>
+            </div>
+          </Grid>
+        </MenuTop>
+
+        <PostListBx>
+          <Grid is_container>
+            {
+              isLoading
+                ? listData.map((item, idx) => {
+                    return <Skeleton version={'post-item'} key={`skel-id-${idx}`}/>
+                  })
+                : listData.map((item, idx) => {
+                    return <PostItem list={item}  key={`post-id-${idx}`}/>
+                  })
+            }
+          </Grid>
+        </PostListBx>
+
+        <MenuBottom>
+          <Grid _className='btn-bx' is_container>
+            <button type='button' className='btns'>
+              <TiHome/>
+            </button>
+            <button type='button' className='btns'>
+              <BiReceipt/>
+            </button>
+            <button type='button' className='btns'>
+              <HiOutlineLocationMarker/>
+            </button>
+            <button type='button' className='btns'>
+              <RiWechatLine/>
+            </button>
+            <button type='button' className='btns'>
+              <FiUser/>
+            </button>
+          </Grid>
+        </MenuBottom>
+      </div>
     <div>
       <MenuTop>
         <Grid is_container>

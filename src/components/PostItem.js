@@ -95,6 +95,7 @@ const ItemBox = styled.li`
       flex-direction: column;
       padding: 3px;
       cursor: pointer;
+      flex: 1;
 
       .subject {
         font-size: 14px;

@@ -6,7 +6,6 @@ import { BiArrowBack } from 'react-icons/bi'
 import PostItem from '../components/PostItem'
 
 // TODO 해당 유저의 고유 아이디 값을 참조하여 관심목록 조회 할것
-
 const LikeList = (props) => {
   const { history } = props
 
@@ -28,7 +27,7 @@ const LikeList = (props) => {
       <div className={'list-cont'}>
         <Grid is_container padding={'0 16px'}>
           <ul className={'like-list'}>
-            <PostItem />
+            {/*<PostItem />*/}
           </ul>
         </Grid>
       </div>

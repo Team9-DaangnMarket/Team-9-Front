@@ -1,0 +1,28 @@
+.wave {
+  position: relative;
+  overflow: hidden;
+  background: #f2f2f2;
+  border-radius: 6px;
+}
+
+.wave::after {
+   content: "";
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 15px;
+   height: 200%;
+   background: linear-gradient(to right, #f2f2f2, #dedede, #f2f2f2);
+   animation: loading 2s infinite linear;
+ }
+
+@keyframes loading {
+  0% {
+    transform: translateX(0);
+  }
+  50%,
+  100% {
+    transform: translateX(460px);
+  }
+}
+
