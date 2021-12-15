@@ -16,6 +16,7 @@ function App() {
       <Route path="/signup" component={Signup} exact />
       <Route path="/detail" component={PostDetail} exact />
       <Route path="/write" component={PostWrite} exact />
+      <Route path="/write/:post_id" component={PostWrite} exact />
     </>
   );
 }

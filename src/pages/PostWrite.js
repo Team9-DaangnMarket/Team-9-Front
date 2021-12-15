@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Grid, Button, Input } from "../elements";
-import { comma } from "../shared/util";
+import { axiosInstance } from "../shared/api";
+import { dummyCate } from "../shared/util";
 import styled from "styled-components";
 import { GoSettings } from "react-icons/go";
 import { MdOutlinePostAdd, MdOutlineClose } from "react-icons/md";
@@ -17,6 +18,7 @@ const PostWrite = (props) => {
 
   const fileInput = useRef();
 
+  //upload file
   const selectFile = () => {
     const reader = new FileReader();
     const file = fileInput.current.files[0];
@@ -26,43 +28,76 @@ const PostWrite = (props) => {
       console.log(reader.result);
     };
   };
+
   const handleClick = () => {
     fileInput.current.click();
   };
 
+  //input list
   const titleOnChange = (e) => {
+    //글자수 제한 20자
     setTitle(e.target.value);
   };
 
   const priceOnChange = (e) => {
-    const priceFormat = comma(e.target.value);
-    setPrice(priceFormat);
+    let target = e.target.value;
+    setPrice(target);
   };
 
   const openModal = () => {
     setIsOpen(true);
   };
 
-  const comepleted = () => {
+  const addPost = () => {
     console.log(title, cate, price, content);
+    if (!title || !content || !price || !cate === "카테고리") {
+      window.alert("빈 공간을 채워주세요!");
+      return;
+    }
+
+    //axios
+    let token = "hello";
+    axiosInstance
+      .post(
+        "/posts",
+        {
+          title: title,
+          content: content,
+          price: price,
+          goodsImg: "",
+          //negocheck price 들어가면 무조건 true값
+          negoCheck: true,
+          category: cate,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
+
   return (
     <>
       <WriteBox>
         <Grid is_container>
-          <Grid
-            is_flex
-            flex_align="center;"
-            flex_justify="space-between;"
-            _className="title"
-          >
-            <p>
-              <BiArrowBack />
-            </p>
-            <h3>중고거래 글쓰기</h3>
-            <Button _className="btn" _onClick={comepleted}>
-              완료
-            </Button>
+          <Grid _className="title">
+            <Grid
+              is_flex
+              flex_align="center;"
+              flex_justify="space-between;"
+              _className="title-inner"
+            >
+              <p>
+                <BiArrowBack />
+              </p>
+              <h3>중고거래 글쓰기</h3>
+              <Button _className="btn" _onClick={addPost}>
+                완료
+              </Button>
+            </Grid>
           </Grid>
           <UploadBox>
             <UploadBtn onClick={handleClick}>
@@ -78,7 +113,7 @@ const PostWrite = (props) => {
               <>
                 <UploadImg>
                   <img src={preview} alt="pre_img" />
-                  <button>
+                  <button onClick={() => setPreview("")}>
                     <MdOutlineClose />
                   </button>
                 </UploadImg>
@@ -104,36 +139,20 @@ const PostWrite = (props) => {
                 <Modal>
                   <div className="shadow"></div>
                   <ul>
-                    <li
-                      onClick={() => {
-                        setIsOpen(false);
-                        setCate("디지털기기");
-                      }}
-                    >
-                      디지털기기
-                    </li>
-                    <li
-                      onClick={() => {
-                        setIsOpen(false);
-                        setCate("생활가전");
-                      }}
-                    >
-                      생활가전
-                    </li>
-                    <li>가구/인테리어</li>
-                    <li>유아동</li>
-                    <li>생활/가공식품</li>
-                    <li>유아도서</li>
-                    <li>여성잡화</li>
-                    <li>여성의류</li>
-                    <li>남성패션/잡화</li>
-                    <li>게임/취미</li>
-                    <li>뷰티/미용</li>
-                    <li>반려동물용품</li>
-                    <li>도서/티켓/음반</li>
-                    <li>식물</li>
-                    <li>기타 중고물품</li>
-                    <li>삽니다</li>
+                    {dummyCate.map((cate, i) => {
+                      return (
+                        <>
+                          <li
+                            onClick={() => {
+                              setIsOpen(false);
+                              setCate(`${cate}`);
+                            }}
+                          >
+                            {cate}
+                          </li>
+                        </>
+                      );
+                    })}
                   </ul>
                 </Modal>
               </>
@@ -201,13 +220,24 @@ export default PostWrite;
 
 const WriteBox = styled.div`
   padding: 10px 16px 50px 16px;
-
   .title {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    width: 100%;
+
     border-bottom: 1px solid var(--border-color);
+
+    .title-inner {
+      max-width: 425px;
+      margin: 0 auto;
+    }
     p {
       font-size: 22px;
     }
   }
+
   input {
     border: 1px solid var(--border-color);
     border-right: 0;
@@ -313,7 +343,7 @@ const Cur = styled.div`
 
 // 상품 사진 업로드
 const UploadBox = styled.div`
-  margin: 30px 0;
+  margin: 60px 0 30px 0;
   display: flex;
 
   .fileUpload {
