@@ -1,6 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components';
 import {comma, getScrollHeight, copyUrlToClip} from '../shared/util'
+import { axiosInstance } from '../shared/api'
 
 import {Grid, Button} from '../elements';
 import {BiArrowBack, BiHomeAlt, BiDotsVerticalRounded} from 'react-icons/bi';
@@ -8,11 +10,15 @@ import {BsShare} from 'react-icons/bs';
 import {AiFillHeart} from 'react-icons/ai';
 import OtherPost from '../components/OtherPost';
 
-const PostDetail = () => {
+const PostDetail = ({ history }) => {
   console.log('[PostDetail]')
+  const params = useParams()
   const topBarRef = useRef(null)
   const [heart, setHeart] = useState(false ? 'on' : '')
   const [opt_modal_open, setOptModal] = useState(false)
+  const [detail_data, setDetailData] = useState(null)
+  const [alt_data, setAltData] = useState(null)
+  console.log('디테일 정보 초기값: ', detail_data)
 
   // 디테일 상단바 색상 세팅 함수
   const handleHeaderPaint = () => {
@@ -77,7 +83,30 @@ const PostDetail = () => {
     setOptModal(false)
   }
 
+  const fetchDetailData = async () => {
+    try {
+      const res = await axiosInstance.get(`/posts/${params.post_id}`)
+      setDetailData(res.data)
+      console.log('상세 데이터 조회 성공', res)
+    } catch (err) {
+      setDetailData(null)
+      console.log('상세 데이터 조회 실패', err.response)
+    }
+  }
+
+  const fetchAltData = async () => {
+    try {
+      const res = await axiosInstance.get(`/posts?page=0&size=6`)
+      console.log('대체 데이터 조회 성공', res)
+      setAltData(res.data)
+    } catch (err) {
+      setAltData(null)
+      console.log('대체 데이터 조회 실패', err.response)
+    }
+  }
+
   useEffect(() => {
+
     window.addEventListener('scroll', handleHeaderPaint)
     window.addEventListener('click', handleCloseOptModal)
 
@@ -87,15 +116,53 @@ const PostDetail = () => {
     }
   }, [])
 
+  useEffect(() => {
+    fetchDetailData()
+    fetchAltData()
+  }, [params])
+
+
+  if (!detail_data) {
+    console.log('대체 화면')
+
+    return (
+        <DetailWrap>
+          <nav className={'detail-nav off'} ref={topBarRef}>
+            <Grid is_container is_flex flex_justify={'space-between'} _className={'nav-btns'}>
+              <button type={'button'} className={'back-btn'} onClick={() => history.goBack()}>
+                <BiArrowBack/>
+              </button>
+              <button type={'button'} onClick={() => history.push('/')}>
+                <BiHomeAlt/>
+              </button>
+            </Grid>
+          </nav>
+
+          <div className={'not-exist-post'}>
+            <Grid is_container>
+              <div className={'guide-txt'}>
+                존재하지 않는 상품이에요 :(
+              </div>
+
+              <h2 className={'alt-title'}>새로 올라온 중고</h2>
+              <ul className={'alt-list'}>
+                <OtherPost other_list={alt_data} title_show={false}/>
+              </ul>
+            </Grid>
+          </div>
+        </DetailWrap>
+    )
+  }
+
   return (
       <DetailWrap>
         <nav className={'detail-nav'} ref={topBarRef}>
           <Grid is_container _className={'nav-btns'}>
             <div className={'devider'}>
-              <button type={'button'} className={'back-btn'}>
+              <button type={'button'} className={'back-btn'} onClick={() => history.goBack()}>
                 <BiArrowBack/>
               </button>
-              <button type={'button'}>
+              <button type={'button'} onClick={() => history.push('/')}>
                 <BiHomeAlt/>
               </button>
             </div>
@@ -125,7 +192,7 @@ const PostDetail = () => {
             <div className={'prd-img'}>
               <div className={'ratio-box'}>
                 <img
-                    src={'https://t1.daumcdn.net/cfile/tistory/160BD90F4B7F846D0C'}
+                    src={detail_data.goodsImg}
                     alt={''}
                 />
               </div>
@@ -143,7 +210,7 @@ const PostDetail = () => {
                     alt={''}
                 />
                 <div className={'user-info'}>
-                  <div className={'user-name'}>username</div>
+                  <div className={'user-name'}>{detail_data.username}</div>
                   <div className={'user-area'}>서초동</div>
                 </div>
               </div>
@@ -160,60 +227,11 @@ const PostDetail = () => {
 
           <Grid is_container padding={'16px'}>
             <div className={'cont-title'}>
-              <h2 className={'subject'}>LG 24인치 Full HD 모니터 판매</h2>
-              <span className={'category'}>생활가전</span>
+              <h2 className={'subject'}>{detail_data.title}</h2>
+              <span className={'category'}>{detail_data.category}</span>
               <span className={'datetime'}>2021-12-13</span>
             </div>
-            <div className={'cont-desc'}>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab
-              asperiores debitis delectus eveniet excepturi, iste magni quidem
-              quod vel. Aliquid aspernatur, commodi cumque deleniti dolor illo
-              ipsam ipsum molestiae nemo nostrum quo sequi, tempore temporibus
-              ullam vero. Aliquam aut consectetur consequatur cumque, deleniti,
-              est ipsum molestiae nemo saepe, sapiente sequi suscipit! Deleniti
-              error eum ex excepturi facere laudantium magni perspiciatis
-              praesentium sed tenetur? Ab autem beatae culpa cupiditate deserunt
-              dolores et fugit, illum impedit minima nihil non numquam omnis optio
-              pariatur praesentium repellat repellendus rerum sequi suscipit vitae
-              voluptate voluptates. Accusantium dicta error eum nisi possimus quia
-              similique velit vitae?
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab
-              asperiores debitis delectus eveniet excepturi, iste magni quidem
-              quod vel. Aliquid aspernatur, commodi cumque deleniti dolor illo
-              ipsam ipsum molestiae nemo nostrum quo sequi, tempore temporibus
-              ullam vero. Aliquam aut consectetur consequatur cumque, deleniti,
-              est ipsum molestiae nemo saepe, sapiente sequi suscipit! Deleniti
-              error eum ex excepturi facere laudantium magni perspiciatis
-              praesentium sed tenetur? Ab autem beatae culpa cupiditate deserunt
-              dolores et fugit, illum impedit minima nihil non numquam omnis optio
-              pariatur praesentium repellat repellendus rerum sequi suscipit vitae
-              voluptate voluptates. Accusantium dicta error eum nisi possimus quia
-              similique velit vitae?
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab
-              asperiores debitis delectus eveniet excepturi, iste magni quidem
-              quod vel. Aliquid aspernatur, commodi cumque deleniti dolor illo
-              ipsam ipsum molestiae nemo nostrum quo sequi, tempore temporibus
-              ullam vero. Aliquam aut consectetur consequatur cumque, deleniti,
-              est ipsum molestiae nemo saepe, sapiente sequi suscipit! Deleniti
-              error eum ex excepturi facere laudantium magni perspiciatis
-              praesentium sed tenetur? Ab autem beatae culpa cupiditate deserunt
-              dolores et fugit, illum impedit minima nihil non numquam omnis optio
-              pariatur praesentium repellat repellendus rerum sequi suscipit vitae
-              voluptate voluptates. Accusantium dicta error eum nisi possimus quia
-              similique velit vitae?
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab
-              asperiores debitis delectus eveniet excepturi, iste magni quidem
-              quod vel. Aliquid aspernatur, commodi cumque deleniti dolor illo
-              ipsam ipsum molestiae nemo nostrum quo sequi, tempore temporibus
-              ullam vero. Aliquam aut consectetur consequatur cumque, deleniti,
-              est ipsum molestiae nemo saepe, sapiente sequi suscipit! Deleniti
-              error eum ex excepturi facere laudantium magni perspiciatis
-              praesentium sed tenetur? Ab autem beatae culpa cupiditate deserunt
-              dolores et fugit, illum impedit minima nihil non numquam omnis optio
-              pariatur praesentium repellat repellendus rerum sequi suscipit vitae
-              voluptate voluptates. Accusantium dicta error eum nisi possimus quia
-              similique velit vitae?
-            </div>
+            <div className={'cont-desc'}>{detail_data.content}</div>
           </Grid>
 
           <Grid is_container padding={'16px'}>
@@ -238,8 +256,8 @@ const PostDetail = () => {
             </button>
 
             <div className={'price-opt'}>
-              <strong className={'price'}>{comma(60000)}원</strong>
-              <button type={'button'} className={'nego-btn'}>
+              <strong className={'price'}>{comma(detail_data.price)}원</strong>
+              <button type={'button'} className={`nego-btn ${detail_data.negoCheck ? 'on' : ''}`}>
                 가격 제안하기
               </button>
             </div>
@@ -250,7 +268,7 @@ const PostDetail = () => {
           </Grid>
         </div>
 
-        <OtherPost />
+        <OtherPost other_list={detail_data.insideList}/>
       </DetailWrap>
   );
 };
@@ -267,9 +285,33 @@ const DetailWrap = styled.section`
     right: 0;
     height: 40px;
     z-index: 9999;
-    border-bottom: 1px solid hsl(0deg 0% 0% / 0%);;
+    border-bottom: 1px solid hsl(0deg 0% 0% / 0%);
     background-color: hsl(0deg 0% 100% / 0%);
     color: hsl(0deg 0% 100%);
+    
+    &.off {
+      border-bottom: 1px solid hsl(0deg 0% 0% / 4%) !important;
+      background-color: #fff !important;
+      color: var(--main-font-color) !important;
+    }
+  }
+  
+  .not-exist-post {
+    padding-top: 56px;
+    
+    .guide-txt {
+      text-align: center;
+      padding: 80px 0;
+    }
+    
+    .alt-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    
+    .alt-list {
+      
+    }
   }
 
   .nav-btns {
@@ -408,7 +450,11 @@ const DetailWrap = styled.section`
         background: none;
         font-weight: bold;
         text-decoration: underline;
-        color: var(--point-color);
+        color: #ccc;
+        
+        &.on {
+          color: var(--point-color);
+        }
       }
     }
 

@@ -9,14 +9,15 @@ import PostDetail from "../pages/PostDetail";
 
 function App() {
   return (
-    <>
-      <GlobalStyles />
-      <Route path="/" component={PostList} exact />
-      <Route path="/login" component={Login} exact />
-      <Route path="/signup" component={Signup} exact />
-      <Route path="/detail" component={PostDetail} exact />
-      <Route path="/write" component={PostWrite} exact />
-    </>
+      <>
+        <GlobalStyles/>
+        <Route path="/" component={PostList} exact/>
+        <Route path="/login" component={Login} exact/>
+        <Route path="/signup" component={Signup} exact/>
+        <Route path="/detail/:post_id" component={PostDetail} exact/>
+        <Route path="/write" component={PostWrite} exact/>
+        <Route path="/likelist" component={LikeList} exact/>
+      </>
   );
 }
 
