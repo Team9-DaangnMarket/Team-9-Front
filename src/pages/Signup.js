@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { axiosInstance } from "../shared/api";
+import { storage } from "../shared/firebase";
 import { checkName, checkId, checkPw } from "../shared/Check";
 import styled from "styled-components";
 import { Grid, Button } from "../elements/index";
@@ -17,13 +18,64 @@ const Signup = () => {
   const [err_id, setErr_id] = useState("");
   const [err_pw, setErr_pw] = useState("");
   const [err_pwCheck, setErr_pwCheck] = useState("");
+  const [err_, setErr_] = useState("");
+  const [err_iddouble, setErr_iddouble] = useState("");
+  const [err_namedouble, setErr_namedouble] = useState("");
+  const [double_btn, setDouble_btn] = useState(true);
 
+  // upload profile pic
+  const fileInput = useRef();
+  const [preview, setPreview] = useState();
+  const [img_url, setImg_url] = useState();
+
+  const selectFile = () => {
+    const reader = new FileReader();
+    const file = fileInput.current.files[0];
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setPreview(reader.result);
+      console.log(reader.result);
+    };
+  };
+
+  const handleUpload = (file) => {
+    const storageRef = storage.ref(file.name);
+    storage
+      .ref(`images/profileImg_${new Date().getTime()}`)
+      .putString(file, "data_url")
+      .then(function (snapshot) {
+        snapshot.ref.getDownloadURL().then((url) => {
+          console.log("스냅샷 URL", url);
+          setImg_url(url);
+        });
+      });
+  };
+
+  const handleClick = () => {
+    fileInput.current.click();
+  };
+
+  //아이디, 닉네임 중복확인 버튼
+  const iddoubleChek = () => {
+    setErr_iddouble(true);
+  };
+  const namedoubleChek = () => {
+    setErr_namedouble(true);
+  };
+
+  //회원가입 버튼
   const signupBtn = () => {
-    if (nickname === "" || id === "" || pw === "" || pwCheck === "") {
-      window.alert("빈 공간을 채워주세요");
+    if (
+      nickname === "" ||
+      id === "" ||
+      pw === "" ||
+      pwCheck === "" ||
+      preview === ""
+    ) {
+      setErr_("빈 공간을 채워주세요");
       return;
     }
-
+    setErr_("");
     if (!checkName(nickname)) {
       setErr_nickname("닉네임은 영문/숫자포함 최소3자 이상 10자 이하입니다");
       return;
@@ -44,14 +96,15 @@ const Signup = () => {
       setErr_pwCheck("비밀번호가 일치 하지 않습니다");
       return;
     }
+    //prifile img upload
+    handleUpload(preview);
 
-    console.log("회원가입 정보", id, nickname, pw);
     axiosInstance
       .post(`/user/signup`, {
         username: id,
         nickname: nickname,
         password: pw,
-        profileImg: "",
+        profileImg: img_url,
       })
       .then((res) => {
         console.log(res);
@@ -59,27 +112,9 @@ const Signup = () => {
         window.location.hef = "/login";
       })
       .catch((err) => {
-        setErr_id("사용할 수 없는 아이디 혹은 닉네임입니다");
+        setErr_("사용할 수 없는 아이디 혹은 닉네임입니다");
         console.log(`회원가입 오류 발생: ${err}`);
       });
-  };
-
-  // upload profile pic
-  const fileInput = useRef();
-  const [preview, setPreview] = useState();
-
-  const selectFile = () => {
-    const reader = new FileReader();
-    const file = fileInput.current.files[0];
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setPreview(reader.result);
-      console.log(reader.result);
-    };
-  };
-
-  const handleClick = () => {
-    fileInput.current.click();
   };
 
   return (
@@ -98,7 +133,7 @@ const Signup = () => {
                 src={
                   preview
                     ? preview
-                    : "https://i.pinimg.com/564x/9b/0e/4d/9b0e4daa1870231d3a69b8d5a1bbd81a.jpg"
+                    : "https://i.pinimg.com/236x/a7/35/bc/a735bc244c696f41a450bc358a027f18--free-wooden-pallets--pallets.jpg"
                 }
                 alt="user_img"
               />
@@ -118,19 +153,46 @@ const Signup = () => {
           </UploadBox>
           {/* signup Form */}
           <InputForm>
-            <input
-              type="text"
-              placeholder="닉네임"
-              onChange={(e) => set_nickname(e.target.value)}
-            />
+            <Grid
+              is_flex
+              _className="form-btn"
+              flex_align="center"
+              flex_justify="center"
+            >
+              <input
+                type="text"
+                placeholder="닉네임"
+                onChange={(e) => {
+                  set_nickname(e.target.value);
+                  setDouble_btn(false);
+                }}
+              />
+              <button onClick={namedoubleChek} disabled={double_btn}>
+                중복 확인
+              </button>
+            </Grid>
             {err_nickname && <p>{err_nickname}</p>}
-
-            <input
-              type="text"
-              placeholder="아이디"
-              onChange={(e) => set_id(e.target.value)}
-            />
+            {err_namedouble && <p>중복된 닉네임입니다</p>}
+            <Grid
+              is_flex
+              _className="form-btn"
+              flex_align="center"
+              flex_justify="center"
+            >
+              <input
+                type="text"
+                placeholder="아이디"
+                onChange={(e) => {
+                  set_id(e.target.value);
+                  setDouble_btn(false);
+                }}
+              />
+              <button onClick={iddoubleChek} disabled={double_btn}>
+                중복 확인
+              </button>
+            </Grid>
             {err_id && <p>{err_id}</p>}
+            {err_iddouble && <p>중복된 아이디입니다</p>}
 
             <input
               type="password"
@@ -145,6 +207,7 @@ const Signup = () => {
               onChange={(e) => set_pwCheck(e.target.value)}
             />
             {err_pwCheck && <p>{err_pwCheck}</p>}
+            {err_ && <p>{err_}</p>}
           </InputForm>
           <Button version={"orange"} _onClick={signupBtn}>
             등록하기
@@ -176,6 +239,27 @@ const Logo = styled.div`
 const InputForm = styled.div`
   width: 300px;
   margin: 0 auto;
+
+  .form-btn {
+    padding: 0;
+    margin: 20px 0 10px 0;
+    input {
+      width: 220px;
+      margin: 0;
+    }
+    button {
+      width: 75px;
+      padding: 12px 0;
+      border-radius: 6px;
+      background-color: var(--point-color);
+      color: #fff;
+      border: 0;
+      outline: 0;
+      margin-left: 5px;
+      margin-top: 0px;
+      cursor: pointer;
+    }
+  }
 
   input {
     width: 100%;
@@ -245,7 +329,7 @@ const Btn = styled.div`
     border: 0;
 
     position: absolute;
-    top: -50px;
+    top: -28px;
     right: -00px;
 
     &:hover {
