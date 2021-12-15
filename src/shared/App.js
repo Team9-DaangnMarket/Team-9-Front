@@ -20,7 +20,7 @@ function App() {
       <Route path="/write/:post_id" component={PostWrite} exact />
       <Route path="/likelist" component={LikeList} exact />
     </>
-  );
+  )
 }
 
-export default App;
+export default App

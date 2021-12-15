@@ -1,6 +1,5 @@
-
-import React from "react";
-import styled from "styled-components";
+import React from 'react'
+import styled from 'styled-components'
 
 const Grid = (props) => {
   const {
@@ -11,7 +10,7 @@ const Grid = (props) => {
     flex_justify,
     padding,
     children,
-  } = props;
+  } = props
   const styles = {
     is_container,
     is_flex,
@@ -19,11 +18,11 @@ const Grid = (props) => {
     flex_justify,
     className: _className,
     padding,
-  };
-  return <GridBox {...styles}>{children}</GridBox>;
-};
+  }
+  return <GridBox {...styles}>{children}</GridBox>
+}
 
-export default Grid;
+export default Grid
 
 const GridBox = styled.div`
   ${({ is_container }) =>
@@ -38,4 +37,4 @@ const GridBox = styled.div`
   ${({ flex_align }) => flex_align && `align-items: ${flex_align};`}
   ${({ flex_justify }) => flex_justify && `justify-content: ${flex_justify};`}
   ${({ padding }) => padding && `padding: ${padding};`}
-`;
+`

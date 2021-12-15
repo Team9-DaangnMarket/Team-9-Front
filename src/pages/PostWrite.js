@@ -54,17 +54,19 @@ const PostWrite = (props) => {
   const [img_url, setImg_url] = useState();
   const user_id = "me";
 
-  const fileInput = useRef();
+
+  const fileInput = useRef()
 
   //upload file
   const selectFile = () => {
-    const reader = new FileReader();
-    const file = fileInput.current.files[0];
-    reader.readAsDataURL(file);
+    const reader = new FileReader()
+    const file = fileInput.current.files[0]
+    reader.readAsDataURL(file)
     reader.onloadend = () => {
       setPreview(reader.result);
     };
   };
+
 
   const handleUpload = (file) => {
     const storageRef = storage.ref(file.name);
@@ -80,25 +82,26 @@ const PostWrite = (props) => {
   };
 
   const handleClick = () => {
-    fileInput.current.click();
-  };
+    fileInput.current.click()
+  }
 
   //input list
   const titleOnChange = (e) => {
     //글자수 제한 20자
-    setTitle(e.target.value);
-  };
+    setTitle(e.target.value)
+  }
 
   const priceOnChange = (e) => {
-    let target = e.target.value;
-    setPrice(target);
-  };
+    let target = e.target.value
+    setPrice(target)
+  }
 
   const openModal = () => {
-    setIsOpen(true);
-  };
+    setIsOpen(true)
+  }
 
   const addPost = () => {
+
     // console.log(title, cate, price, content);
     // if (!title || !content || !price || !cate === "카테고리") {
     //   window.alert("빈 공간을 채워주세요!");
@@ -123,18 +126,18 @@ const PostWrite = (props) => {
     <>
       <WriteBox>
         <Grid is_container>
-          <Grid _className="title">
+          <Grid _className='title'>
             <Grid
               is_flex
-              flex_align="center;"
-              flex_justify="space-between;"
-              _className="title-inner"
+              flex_align='center;'
+              flex_justify='space-between;'
+              _className='title-inner'
             >
               <p>
                 <BiArrowBack />
               </p>
               <h3>중고거래 글쓰기</h3>
-              <Button _className="btn" _onClick={addPost}>
+              <Button _className='btn' _onClick={addPost}>
                 완료
               </Button>
             </Grid>
@@ -143,8 +146,8 @@ const PostWrite = (props) => {
             <UploadBtn onClick={handleClick}>
               <FaCamera />
               <input
-                type="file"
-                className="fileUpload"
+                type='file'
+                className='fileUpload'
                 ref={fileInput}
                 onChange={selectFile}
               />
@@ -152,8 +155,8 @@ const PostWrite = (props) => {
             {preview ? (
               <>
                 <UploadImg>
-                  <img src={preview} alt="pre_img" />
-                  <button onClick={() => setPreview("")}>
+                  <img src={preview} alt='pre_img' />
+                  <button onClick={() => setPreview('')}>
                     <MdOutlineClose />
                   </button>
                 </UploadImg>
@@ -162,13 +165,13 @@ const PostWrite = (props) => {
           </UploadBox>
           <Grid>
             <Input
-              placeholder="글 제목"
+              placeholder='글 제목'
               _onChange={titleOnChange}
               value={_post?.title}
             />
           </Grid>
           <SelectBox>
-            <div className="cate" onClick={openModal}>
+            <div className='cate' onClick={openModal}>
               {cate}
               <span>
                 <FaChevronRight />
@@ -177,13 +180,14 @@ const PostWrite = (props) => {
             {isOpen && (
               <>
                 <Modal>
-                  <div className="shadow"></div>
+                  <div className='shadow'></div>
                   <ul>
                     {dummyCate.map((c, i) => {
                       return (
                         <>
                           <li
                             onClick={() => {
+
                               setIsOpen(false);
                               setCate(`${c}`);
                             }}
@@ -191,7 +195,7 @@ const PostWrite = (props) => {
                             {c}
                           </li>
                         </>
-                      );
+                      )
                     })}
                   </ul>
                 </Modal>
@@ -199,45 +203,49 @@ const PostWrite = (props) => {
             )}
           </SelectBox>
           <Grid is_flex>
-            <Grid is_flex _className="price-box">
+            <Grid is_flex _className='price-box'>
               <Cur cur={price}>\</Cur>
               <Input
-                placeholder="가격 (선택사항)"
-                _className="price"
+                placeholder='가격 (선택사항)'
+                _className='price'
                 _onChange={priceOnChange}
+
                 value={_post?.price}
               ></Input>
+
             </Grid>
 
-            <Grid _className="price-checkbox">
-              <label className="control control--checkbox">
+            <Grid _className='price-checkbox'>
+              <label className='control control--checkbox'>
                 가격 제안받기
                 <input
-                  type="checkbox"
-                  checked={price ? "checked" : null}
+                  type='checkbox'
+                  checked={price ? 'checked' : null}
                   disabled={price ? false : true}
                 />
-                <div className="control__indicator"></div>
+                <div className='control__indicator'></div>
               </label>
             </Grid>
           </Grid>
           <textarea
+
             cols="20"
             rows="30"
             value={_post?.content}
             className="textarea"
             type="textarea"
             placeholder="자양동에 올릴 게시글 내용을 작성해주세요.(가품 및 판매금지품목은 게시가 제한될 수 있어요.)"
+
             onChange={(e) => {
-              setContent(e.target.value);
+              setContent(e.target.value)
             }}
           />
           <SettingCtrl>
             <Grid
               is_flex
-              flex_align="center;"
-              _className="setting-inner"
-              padding="16px"
+              flex_align='center;'
+              _className='setting-inner'
+              padding='16px'
             >
               <span>
                 <MdOutlinePostAdd />
@@ -252,10 +260,10 @@ const PostWrite = (props) => {
         </Grid>
       </WriteBox>
     </>
-  );
-};
+  )
+}
 
-export default PostWrite;
+export default PostWrite
 
 const WriteBox = styled.div`
   padding: 10px 16px 50px 16px;
@@ -331,7 +339,7 @@ const WriteBox = styled.div`
     }
 
     .control__indicator:after {
-      content: "";
+      content: '';
       position: absolute;
       display: none;
     }
@@ -368,9 +376,9 @@ const WriteBox = styled.div`
     border: 0;
     box-sizing: border-box;
     outline: 0;
-    font-family: "NanumSquareRound", serif;
+    font-family: 'NanumSquareRound', serif;
   }
-`;
+`
 
 // currency color
 const Cur = styled.div`
@@ -378,7 +386,7 @@ const Cur = styled.div`
   align-items: center;
   color: ${(props) =>
     props.cur ? `var(--main-font-color)` : `var(--sub-font-color)`};
-`;
+`
 
 // 상품 사진 업로드
 const UploadBox = styled.div`
@@ -388,7 +396,7 @@ const UploadBox = styled.div`
   .fileUpload {
     display: none;
   }
-`;
+`
 
 const UploadBtn = styled.div`
   width: 70px;
@@ -408,7 +416,7 @@ const UploadBtn = styled.div`
   }
 
   }
-`;
+`
 
 const UploadImg = styled.div`
   width: 70px;
@@ -445,7 +453,7 @@ const UploadImg = styled.div`
     cursor: pointer
   }
 
-  }`;
+  }`
 
 //select 카테고리
 const SelectBox = styled.div`
@@ -456,7 +464,7 @@ const SelectBox = styled.div`
       float: right;
     }
   }
-`;
+`
 
 const Modal = styled.div`
   .shadow {
@@ -486,7 +494,7 @@ const Modal = styled.div`
       border-bottom: 1px solid var(--border-color);
     }
   }
-`;
+`
 
 const SettingCtrl = styled.div`
   position: fixed;
@@ -511,4 +519,4 @@ const SettingCtrl = styled.div`
       line-height: 40px;
     }
   }
-`;
+`
