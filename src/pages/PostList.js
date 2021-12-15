@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import PostItem from '../components/PostItem'
+import {axiosInstance} from '../shared/api'
 
 import {Grid} from '../elements'
-
 import {TiHome} from 'react-icons/ti'
 import {BiReceipt} from 'react-icons/bi'
 import {RiWechatLine} from 'react-icons/ri'
@@ -18,29 +18,8 @@ import {
 
 import Skeleton from '../components/skeleton/Skeleton'
 
-import {axiosInstance} from '../shared/api'
-
 const PostList = (props) => {
-  const list = [
-    {
-      postId: 26,
-      username: 'aaazz11',
-      nickname: 'zxcv',
-      title: '4번째 내꺼',
-      price: 12345,
-      goodsImg: 'asdfqwer',
-      postLikes: 2,
-    },
-    {
-      postId: 25,
-      username: 'aaaa',
-      nickname: 'babooo',
-      title: '시간형식체크2',
-      price: 12345,
-      goodsImg: 'asdfqwer',
-      postLikes: 0,
-    },
-  ]
+
   // const apiTest = async () => {
   //   const res = await axiosInstance.get(
   //       'http://15.164.171.227/posts?page=0&size=2'
@@ -55,18 +34,15 @@ const PostList = (props) => {
   // 스켈레톤 로딩 테스트 코드
   useEffect(() => {
     setIsLoading(true)
-    setListData(list);
-    setTimeout(() => setIsLoading(false), 2500);
-  }, [])
-  const [_post, set_Post] = useState()
-
-  useEffect(() => {
     axiosInstance
-      .get('http://15.164.171.227/posts?page=0&size=20')
-      .then((res) => {
-        set_Post(res.data)
-      })
+        .get('http://15.164.171.227/posts?page=0&size=20')
+        .then((res) => {
+          setListData(res.data);
+        })
+
+    setTimeout(() => setIsLoading(false), 2000);
   }, [])
+
   return (
       <div>
         <MenuTop>
@@ -97,11 +73,11 @@ const PostList = (props) => {
           <Grid is_container>
             {
               isLoading
-                ? listData.map((item, idx) => {
+                  ? listData.map((item, idx) => {
                     return <Skeleton version={'post-item'} key={`skel-id-${idx}`}/>
                   })
-                : listData.map((item, idx) => {
-                    return <PostItem list={item}  key={`post-id-${idx}`}/>
+                  : listData.map((item, idx) => {
+                    return <PostItem list={item} key={`post-id-${idx}`}/>
                   })
             }
           </Grid>
@@ -127,60 +103,6 @@ const PostList = (props) => {
           </Grid>
         </MenuBottom>
       </div>
-    <div>
-      <MenuTop>
-        <Grid is_container>
-          <div className='nav-top-bx'>
-            <h2>
-              동동동
-              <MdOutlineKeyboardArrowDown className='arrow-down' />
-            </h2>
-            <Grid is_container _className='top-btns'>
-              <button>
-                <HiOutlineSearch />
-              </button>
-
-              <button>
-                <MdOutlineMenu />
-              </button>
-
-              <button>
-                <HiOutlineBell />
-              </button>
-            </Grid>
-          </div>
-        </Grid>
-      </MenuTop>
-
-      <PostListBx>
-        <Grid is_container>
-          {_post &&
-            _post.map((a, b) => {
-              return <PostItem list={a} key={a.postId}></PostItem>
-            })}
-        </Grid>
-      </PostListBx>
-
-      <MenuBottom>
-        <Grid _className='btn-bx' is_container>
-          <button type='button' className='btns'>
-            <TiHome />
-          </button>
-          <button type='button' className='btns'>
-            <BiReceipt />
-          </button>
-          <button type='button' className='btns'>
-            <HiOutlineLocationMarker />
-          </button>
-          <button type='button' className='btns'>
-            <RiWechatLine />
-          </button>
-          <button type='button' className='btns'>
-            <FiUser />
-          </button>
-        </Grid>
-      </MenuBottom>
-    </div>
   )
 }
 
@@ -203,6 +125,7 @@ const MenuTop = styled.div`
       font-size: 20px;
       cursor: pointer;
     }
+
     .arrow-down {
       vertical-align: middle;
     }
@@ -211,6 +134,7 @@ const MenuTop = styled.div`
   .top-btns {
     display: flex;
     justify-content: flex-end;
+
     button {
       display: flex;
       align-items: center;
