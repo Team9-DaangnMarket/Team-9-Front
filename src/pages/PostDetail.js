@@ -55,10 +55,9 @@ const PostDetail = ({history}) => {
     }
   }
 
-  // TODO: 찜 기능 API 연동
-  const handleClickLikeBtn = async () => {
+  const handleClickLikeBtn = async (post_id) => {
     try {
-      const res = await axiosInstance.post('/postLike/35')
+      const res = await axiosInstance.post(`/postLike/${post_id}`)
       console.log('찜하기 API 결과', res)
     } catch (err) {
       alert('알수없는 이유로 기능을 사용할 수 없습니다 :(')
@@ -286,7 +285,7 @@ const PostDetail = ({history}) => {
               _className={'ctrl-inner'}
               padding={'16px'}
           >
-            <button type={'button'} className={`like-btn ${heart ? 'on' : ''}`} onClick={handleClickLikeBtn}>
+            <button type={'button'} className={`like-btn ${heart ? 'on' : ''}`} onClick={() => handleClickLikeBtn(detail_data.postId)}>
               <AiFillHeart/>
             </button>
 
