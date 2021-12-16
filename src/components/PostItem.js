@@ -17,6 +17,7 @@ const PostItem = (props) => {
     try {
       const res = await axiosInstance.post(`/postLike/${props.post.postId}`)
       console.log('찜하기 API 결과', res)
+      window.location.reload()
     } catch (err) {
       alert('알수없는 이유로 기능을 사용할 수 없습니다 :(')
     }
