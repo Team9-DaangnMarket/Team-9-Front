@@ -5,6 +5,8 @@ import {history} from '../redux/configureStore'
 
 import {Grid, Button} from '../elements';
 
+const NO_IMG = 'https://www.i-shop.link/home/assets/images/no-image.png'
+
 const OtherPost = ({other_list, title_show}) => {
   console.log('[OtherProduct]')
 
@@ -36,7 +38,7 @@ const OtherPost = ({other_list, title_show}) => {
                     <li key={`other-id-${idx}`} className={'other-item'}
                         onClick={() => handleClickDetailLink(item.postId)}>
                       <div className={'prd-img'}>
-                        <img src={item.goodsImg} alt=""/>
+                        <img src={item.goodsImg} alt="" onError={(e) => e.target.src = NO_IMG}/>
                       </div>
 
                       <div className={'prd-subject'}>{item.title}</div>

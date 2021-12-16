@@ -8,6 +8,8 @@ import {axiosInstance} from '../shared/api'
 import {AiFillHeart, AiOutlineHeart} from 'react-icons/ai'
 import {IoChatbubblesOutline} from 'react-icons/io5'
 
+const NO_IMG = 'https://www.i-shop.link/home/assets/images/no-image.png'
+
 const PostItem = (props) => {
   const location = useLocation()
   const {pathname} = location
@@ -36,6 +38,7 @@ const PostItem = (props) => {
             <img
                 src={props.post.goodsImg}
                 alt=''
+                onError={(e) => e.target.src = NO_IMG}
             />
           </div>
           <div className={'item-detail'} onClick={handleClickGoDetail}>

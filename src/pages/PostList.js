@@ -33,7 +33,7 @@ const PostList = (props) => {
   useEffect(() => {
     setIsLoading(true)
     axiosInstance
-      .get('http://15.164.171.227/posts?page=0&size=100')
+      .get('http://15.164.171.227/posts?page=0&size=20')
       .then((res) => {
         setListData(res.data)
       })
