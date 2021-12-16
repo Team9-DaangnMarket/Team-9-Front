@@ -11,8 +11,9 @@ import { BiArrowBack } from "react-icons/bi";
 import { FaChevronRight, FaCamera } from "react-icons/fa";
 
 const PostWrite = (props) => {
+  const { history } = props
   const { post_id } = useParams();
-  const [_post, set_Post] = useState();
+  const [_post, set_Post] = useState("");
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [cate, setCate] = useState("카테고리");
@@ -27,8 +28,12 @@ const PostWrite = (props) => {
       axiosInstance
         .get(`/posts/${post_id}`)
         .then((res) => {
+          console.log(res.data)
           set_Post(res.data);
-          setCate(res.data.category);
+          setCate(res.data.categoryName);
+          setImg_url(res.data.goodsImg)
+          setPreview(res.data.goodsImg)
+          setPrice(res.data.price)
         })
         .catch((err) => {
           console.log(err);
@@ -97,9 +102,12 @@ const PostWrite = (props) => {
         price: price,
         goodsImg: img_url,
         negoCheck: true,
-        category: cate,
+        categoryName: cate,
       })
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res)
+        history.replace('/')
+      })
       .catch((err) => console.log(err));
   };
 
@@ -119,7 +127,7 @@ const PostWrite = (props) => {
         price: price,
         goodsImg: img_url,
         negoCheck: true,
-        category: cate,
+        categoryName: cate,
       })
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
@@ -136,7 +144,7 @@ const PostWrite = (props) => {
               _className="title-inner"
             >
               <p>
-                <BiArrowBack />
+                <BiArrowBack onClick={() => history.replace('/')} style={{cursor: 'pointer'}}/>
               </p>
               <h3>중고거래 글쓰기</h3>
               {post_id ? (
@@ -194,7 +202,7 @@ const PostWrite = (props) => {
                     {dummyCate.map((c, i) => {
                       return (
                         <>
-                          <li
+                          <li key={`cate-id-${i}`}
                             onClick={() => {
                               setIsOpen(false);
                               setCate(`${c}`);

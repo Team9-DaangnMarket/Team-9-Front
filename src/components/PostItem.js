@@ -8,7 +8,6 @@ import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 import { IoChatbubblesOutline } from 'react-icons/io5'
 
 const PostItem = (props) => {
-  console.log(props)
   const location = useLocation()
   const { pathname } = location
   const [heart_on, setHeartOn] = useState(false)
