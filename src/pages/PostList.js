@@ -31,7 +31,7 @@ const PostList = (props) => {
   useEffect(() => {
     setIsLoading(true)
     axiosInstance
-      .get('http://15.164.171.227/posts?page=0&size=20')
+      .get('http://15.164.171.227/posts?page=0&size=100')
       .then((res) => {
         setListData(res.data)
       })
@@ -80,7 +80,7 @@ const PostList = (props) => {
                 return <Skeleton version={'post-item'} key={`skel-id-${idx}`} />
               })
             : listData.map((item, idx) => {
-                return <PostItem list={item} key={`post-id-${idx}`} />
+                return <PostItem post={item} key={`post-id-${idx}`} />
               })}
         </Grid>
       </PostListBx>

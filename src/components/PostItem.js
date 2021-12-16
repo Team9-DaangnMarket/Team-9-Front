@@ -24,20 +24,20 @@ const PostItem = (props) => {
   return (
     <ItemBox
       onClick={() => {
-        history.push(`/detail/${props.list.postId}`)
+        history.push(`/detail/${props.post.postId}`)
       }}
     >
       <div className={'item-top'}>
         <div className={'item-img'} onClick={handleClickGoDetail}>
           <img
-            src='https://t1.daumcdn.net/cfile/tistory/160BD90F4B7F846D0C'
+            src={props.post.goodsImg}
             alt=''
           />
         </div>
         <div className={'item-detail'} onClick={handleClickGoDetail}>
-          <strong className={'subject'}>{props.list.title}</strong>
-          <span className={'area'}>서초동</span>
-          <span className={'price'}>{comma(`${props.list.price}`)}원</span>
+          <strong className={'subject'}>{props.post.title}</strong>
+          <span className={'area'}>동네정보없음</span>
+          <span className={'price'}>{comma(`${props.post.price}`)}원</span>
         </div>
         {pathname === '/likelist' && (
           <div className={'opt-group'}>
@@ -51,11 +51,11 @@ const PostItem = (props) => {
       <div className={'item-bottom'}>
         <div className={'icon-box'}>
           <IoChatbubblesOutline />
-          <span>1</span>
+          <span>0</span>
         </div>
         <div className={'icon-box'}>
           <AiOutlineHeart />
-          <span>{props.list.postLikes}</span>
+          <span>{props.post.postLikes}</span>
         </div>
       </div>
     </ItemBox>
@@ -82,6 +82,9 @@ const ItemBox = styled.li`
       cursor: pointer;
 
       img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
         position: absolute;
         top: 50%;
         left: 50%;
