@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
-import { axiosInstance } from '../shared/api'
+import {axiosInstance} from '../shared/api'
 
 import {Grid} from '../elements'
 import {BiArrowBack} from 'react-icons/bi'
@@ -16,8 +16,7 @@ const LikeList = (props) => {
       const res = await axiosInstance.get('/postLike')
       setLikeList(res.data)
       console.log('찜 목록 불러오기 성공', res.data)
-    }
-    catch (err) {
+    } catch (err) {
       console.log('찜 목록 불러오기 실패', err)
     }
   }
@@ -26,7 +25,7 @@ const LikeList = (props) => {
     fetchLikeList()
   }, []);
 
-  if (!like_list) {
+  if (!like_list.length) {
     return (
         <LikeListWrap>
           <nav className={'list-nav'}>
@@ -42,7 +41,7 @@ const LikeList = (props) => {
             </Grid>
           </nav>
 
-          <Grid is_container is_flex flex_justify={'center'}>
+          <Grid is_container is_flex flex_justify={'center'} padding={'40px 0 0 0'}>
             <EmptyLike>
               찜 목록이 없습니다 :)
             </EmptyLike>
@@ -75,7 +74,6 @@ const LikeList = (props) => {
                   return <PostItem post={post} key={`post-id-${idx}`}/>
                 })
               }
-
             </ul>
           </Grid>
         </div>
