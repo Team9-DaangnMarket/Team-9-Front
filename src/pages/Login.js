@@ -71,7 +71,7 @@ const Login = () => {
         <Button
           _className="login_btn"
           version="orange"
-          disabled={login_disabeld}
+          disabled={false}
           _onClick={handleClickLogin}
         >
           로그인
