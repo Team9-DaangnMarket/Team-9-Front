@@ -79,12 +79,10 @@ const Login = () => {
         </div>
 
         <Button
-          _className='login_btn'
-          version='orange'
-          disabled={login_disabeld}
-          _onClick={() => {
-            handleClickLogin()
-          }}
+          _className="login_btn"
+          version="orange"
+          disabled={false}
+          _onClick={handleClickLogin}
         >
           로그인
         </Button>

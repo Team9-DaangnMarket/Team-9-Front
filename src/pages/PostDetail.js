@@ -14,7 +14,7 @@ const PostDetail = ({history}) => {
   console.log('[PostDetail]')
   const params = useParams()
   const topBarRef = useRef(null)
-  const [heart, setHeart] = useState(false ? 'on' : '')
+  const [heart, setHeart] = useState(true)
   const [opt_modal_open, setOptModal] = useState(false)
   const [detail_data, setDetailData] = useState(null)
   const [alt_data, setAltData] = useState(null)
@@ -55,9 +55,16 @@ const PostDetail = ({history}) => {
     }
   }
 
-  const handleClickLikeBtn = () => {
-    const onState = heart ? '' : 'on'
-    setHeart(onState)
+  // TODO: 찜 기능 API 연동
+  const handleClickLikeBtn = async () => {
+    try {
+      const res = await axiosInstance.post('/postLike/35')
+      console.log('찜하기 API 결과', res)
+    } catch (err) {
+      alert('알수없는 이유로 기능을 사용할 수 없습니다 :(')
+    }
+
+    setHeart(!heart)
   }
 
   const handleClickCopyUrl = () => {
@@ -106,6 +113,10 @@ const PostDetail = ({history}) => {
       console.log('params id', params.post_id)
       const res = await axiosInstance.get(`/posts/${params.post_id}`)
       setDetailData(res.data)
+
+      const isLiked = res.data.likeCheck
+      console.log('찜 상태', isLiked)
+      setHeart(isLiked)
       console.log('상세 데이터 조회 성공', res)
     } catch (err) {
       setDetailData(null)
@@ -235,7 +246,7 @@ const PostDetail = ({history}) => {
                 />
                 <div className={'user-info'}>
                   <div className={'user-name'}>{detail_data.nickname}</div>
-                  <div className={'user-area'}>서초동</div>
+                  <div className={'user-area'}>동네정보없음</div>
                 </div>
               </div>
 
@@ -253,13 +264,13 @@ const PostDetail = ({history}) => {
             <div className={'cont-title'}>
               <h2 className={'subject'}>{detail_data.title}</h2>
               <span className={'category'}>{detail_data.category}</span>
-              <span className={'datetime'}>2021-12-13</span>
+              <span className={'datetime'}>{detail_data.createdAt}</span>
             </div>
             <div className={'cont-desc'}>{detail_data.content}</div>
           </Grid>
 
           <Grid is_container padding={'16px'}>
-            <div className={'veiws-count'}>관심1 · 조회 22</div>
+            <div className={'veiws-count'}>관심 {detail_data.postLike}· 조회 {detail_data.visitCount}</div>
             <button type={'button'} className={'singo-btn'}>
               이 게시글 신고하기
             </button>
@@ -275,7 +286,7 @@ const PostDetail = ({history}) => {
               _className={'ctrl-inner'}
               padding={'16px'}
           >
-            <button type={'button'} className={`like-btn ${heart}`} onClick={handleClickLikeBtn}>
+            <button type={'button'} className={`like-btn ${heart ? 'on' : ''}`} onClick={handleClickLikeBtn}>
               <AiFillHeart/>
             </button>
 
@@ -503,6 +514,8 @@ const DetailWrap = styled.section`
         height: 100%;
 
         img {
+          width: 100%;
+          height: 100%;
           object-fit: cover;
           position: absolute;
           top: 50%;
