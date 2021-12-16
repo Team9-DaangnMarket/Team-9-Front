@@ -14,3 +14,4 @@ axiosInstance.interceptors.request.use((config) => {
   config.headers.common['authorization'] = getCookie('token')
   return config
 })
+
