@@ -1,89 +1,101 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useHistory } from "react-router";
-import { axiosInstance } from "../shared/api";
+import React, { useState, useEffect } from 'react'
+import styled from 'styled-components'
+import { useHistory } from 'react-router'
+import { axiosInstance } from '../shared/api'
 
-import { Grid, Button } from "../elements";
+import { useDispatch } from 'react-redux'
+import { actionCreators as userActions } from '../redux/modules/user'
+
+import { Grid, Button } from '../elements'
 
 const Login = () => {
-  const history = useHistory();
-  const [login_disabeld, setLoginDisabled] = useState(true);
-  const [input_values, setInputValues] = useState({ user_id: "", user_pw: "" });
+  const history = useHistory()
+  const dispatch = useDispatch()
+
+  const [login_disabeld, setLoginDisabled] = useState(true)
+  const [input_values, setInputValues] = useState({ user_id: '', user_pw: '' })
+  console.log(input_values)
 
   const handleChangeInput = (e) => {
     setInputValues({
       ...input_values,
       [e.target.name]: e.target.value,
-    });
-  };
+    })
+  }
 
   const handleClickLogin = () => {
-    console.log("로그인");
     axiosInstance
       .post(`/user/login`, {
-        username: "kei123",
-        password: "kei123!@#",
+        username: input_values.user_id,
+        password: input_values.user_pw,
       })
       .then((res) => {
-        console.log(res);
-        window.alert("로그인 성공!");
+        // console.log(res.headers.authorization)
+        dispatch(
+          userActions.loginAction({
+            userId: input_values.user_id,
+            token: res.headers.authorization,
+          })
+        )
       })
       .catch((err) => {
-        console.log(`로그인 오류 발생: ${err}`);
-      });
-  };
+        console.log(`로그인 오류 발생: ${err}`)
+      })
+  }
 
   useEffect(() => {
-    if (input_values.user_id !== "" && input_values.user_pw !== "") {
-      setLoginDisabled(false);
+    if (input_values.user_id !== '' && input_values.user_pw !== '') {
+      setLoginDisabled(false)
     } else {
-      setLoginDisabled(true);
+      setLoginDisabled(true)
     }
 
-    return () => {};
-  }, [input_values]);
+    return () => {}
+  }, [input_values])
 
   return (
     <Grid is_container>
       <Wrap>
-        <div className="logo_img">
-          <img src="assets/signup_logo.png" alt="logo" />
+        <div className='logo_img'>
+          <img src='assets/signup_logo.png' alt='logo' />
         </div>
 
-        <div className="input_bx">
+        <div className='input_bx'>
           <input
-            className="inputEl"
-            type="text"
-            name="user_id"
-            placeholder="아이디"
+            className='inputEl'
+            type='text'
+            name='user_id'
+            placeholder='아이디'
             onChange={handleChangeInput}
           />
 
           <input
-            className="inputEl"
-            type="password"
-            name="user_pw"
-            placeholder="비밀번호"
+            className='inputEl'
+            type='password'
+            name='user_pw'
+            placeholder='비밀번호'
             onChange={handleChangeInput}
           />
         </div>
 
         <Button
-          _className="login_btn"
-          version="orange"
+          _className='login_btn'
+          version='orange'
           disabled={login_disabeld}
-          _onClick={handleClickLogin}
+          _onClick={() => {
+            handleClickLogin()
+          }}
         >
           로그인
         </Button>
 
-        <div className="process_login">
+        <div className='process_login'>
           <p>
             아직 계정이 없으신가요?
             <button
-              className="signup_btn"
+              className='signup_btn'
               onClick={() => {
-                history.push("/signup");
+                history.push('/signup')
               }}
             >
               회원가입
@@ -92,8 +104,8 @@ const Login = () => {
         </div>
       </Wrap>
     </Grid>
-  );
-};
+  )
+}
 
 const Wrap = styled.div`
   .logo_img {
@@ -138,6 +150,6 @@ const Wrap = styled.div`
     outline: none;
     cursor: pointer;
   }
-`;
+`
 
-export default Login;
+export default Login

@@ -157,15 +157,15 @@ const PostListBx = styled.div`
   }
   .plus-btn {
     position: fixed;
-    top: 86%;
+    top: calc(93.67vh + -67.50999999999999px);
     right: calc(49.83vw + -201.79px);
-    width: 65px;
-    height: 65px;
+    width: 40px;
+    height: 40px;
     border: none;
     border-radius: 50%;
     background: var(--point-color);
     color: #fff;
-    font-size: 35px;
+    font-size: 20px;
   }
 `
 
