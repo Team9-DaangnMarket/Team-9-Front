@@ -3,6 +3,7 @@ import {useParams} from 'react-router-dom'
 import styled from 'styled-components';
 import {comma, getScrollHeight, copyUrlToClip} from '../shared/util'
 import {axiosInstance} from '../shared/api'
+import { getCookie } from '../shared/Cookie'
 
 import {Grid, Button} from '../elements';
 import {BiArrowBack, BiHomeAlt, BiDotsVerticalRounded} from 'react-icons/bi';
@@ -10,8 +11,11 @@ import {BsShare} from 'react-icons/bs';
 import {AiFillHeart} from 'react-icons/ai';
 import OtherPost from '../components/OtherPost';
 
+const NO_IMG = 'https://www.i-shop.link/home/assets/images/no-image.png'
+
 const PostDetail = ({history}) => {
   console.log('[PostDetail]')
+  const is_login = getCookie('id')
   const params = useParams()
   const topBarRef = useRef(null)
   const [heart, setHeart] = useState(true)
@@ -200,7 +204,7 @@ const PostDetail = ({history}) => {
               </button>
 
               {
-                true // 로그인 아이디와 작성자가 같을 경우
+                  is_login === detail_data.username // 로그인 아이디와 작성자가 같을 경우
                   && (
                       <button type={'button'} className={'more-btn'} onClick={handleOpenOtpModal}>
                         <BiDotsVerticalRounded className={'more-icon'}/>
@@ -228,6 +232,7 @@ const PostDetail = ({history}) => {
                 <img
                     src={detail_data.goodsImg}
                     alt={''}
+                    onError={(e) => e.target.src = NO_IMG}
                 />
               </div>
             </div>
