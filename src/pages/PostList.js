@@ -1,15 +1,16 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import PostItem from '../components/PostItem'
-import {axiosInstance} from '../shared/api'
+import { axiosInstance } from '../shared/api'
 
-import {Grid} from '../elements'
-import {TiHome} from 'react-icons/ti'
-import {BiReceipt} from 'react-icons/bi'
-import {RiWechatLine} from 'react-icons/ri'
-import {FiUser} from 'react-icons/fi'
-import {MdOutlineMenu} from 'react-icons/md'
-import {MdOutlineKeyboardArrowDown} from 'react-icons/md'
+import { Grid, Button } from '../elements'
+import { TiHome } from 'react-icons/ti'
+import { BiReceipt } from 'react-icons/bi'
+import { RiWechatLine } from 'react-icons/ri'
+import { FiUser } from 'react-icons/fi'
+import { MdOutlineMenu } from 'react-icons/md'
+import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
+import { BsPlusLg } from 'react-icons/bs'
 import {
   HiOutlineLocationMarker,
   HiOutlineSearch,
@@ -18,15 +19,10 @@ import {
 
 import Skeleton from '../components/skeleton/Skeleton'
 
-const PostList = (props) => {
+import { useHistory } from 'react-router-dom'
 
-  // const apiTest = async () => {
-  //   const res = await axiosInstance.get(
-  //       'http://15.164.171.227/posts?page=0&size=2'
-  //   )
-  //   console.log('로그인 성공', res)
-  // }
-  // apiTest()
+const PostList = (props) => {
+  const history = useHistory()
 
   const [listData, setListData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
@@ -35,74 +31,80 @@ const PostList = (props) => {
   useEffect(() => {
     setIsLoading(true)
     axiosInstance
-        .get('http://15.164.171.227/posts?page=0&size=20')
-        .then((res) => {
-          setListData(res.data);
-        })
+      .get('http://15.164.171.227/posts?page=0&size=20')
+      .then((res) => {
+        setListData(res.data)
+      })
 
-    setTimeout(() => setIsLoading(false), 2000);
+    setTimeout(() => setIsLoading(false), 2000)
   }, [])
 
   return (
-      <div>
-        <MenuTop>
-          <Grid is_container>
-            <div className='nav-top-bx'>
-              <h2>
-                동동동
-                <MdOutlineKeyboardArrowDown className='arrow-down'/>
-              </h2>
-              <Grid is_container _className='top-btns'>
-                <button>
-                  <HiOutlineSearch/>
-                </button>
+    <div>
+      <MenuTop>
+        <Grid is_container>
+          <div className='nav-top-bx'>
+            <h2>
+              동동동
+              <MdOutlineKeyboardArrowDown className='arrow-down' />
+            </h2>
+            <Grid is_container _className='top-btns'>
+              <button>
+                <HiOutlineSearch />
+              </button>
 
-                <button>
-                  <MdOutlineMenu/>
-                </button>
+              <button>
+                <MdOutlineMenu />
+              </button>
 
-                <button>
-                  <HiOutlineBell/>
-                </button>
-              </Grid>
-            </div>
-          </Grid>
-        </MenuTop>
+              <button>
+                <HiOutlineBell />
+              </button>
+            </Grid>
+          </div>
+        </Grid>
+      </MenuTop>
 
-        <PostListBx>
-          <Grid is_container>
-            {
-              isLoading
-                  ? listData.map((item, idx) => {
-                    return <Skeleton version={'post-item'} key={`skel-id-${idx}`}/>
-                  })
-                  : listData.map((item, idx) => {
-                    return <PostItem list={item} key={`post-id-${idx}`}/>
-                  })
-            }
-          </Grid>
-        </PostListBx>
+      <PostListBx>
+        <Grid is_container _className='parent-position'>
+          <Button
+            _className='plus-btn'
+            _onClick={() => {
+              history.push('/write')
+            }}
+          >
+            <BsPlusLg />
+          </Button>
+          {isLoading
+            ? listData.map((item, idx) => {
+                return <Skeleton version={'post-item'} key={`skel-id-${idx}`} />
+              })
+            : listData.map((item, idx) => {
+                return <PostItem list={item} key={`post-id-${idx}`} />
+              })}
+        </Grid>
+      </PostListBx>
 
-        <MenuBottom>
-          <Grid _className='btn-bx' is_container>
-            <button type='button' className='btns'>
-              <TiHome/>
-            </button>
-            <button type='button' className='btns'>
-              <BiReceipt/>
-            </button>
-            <button type='button' className='btns'>
-              <HiOutlineLocationMarker/>
-            </button>
-            <button type='button' className='btns'>
-              <RiWechatLine/>
-            </button>
-            <button type='button' className='btns'>
-              <FiUser/>
-            </button>
-          </Grid>
-        </MenuBottom>
-      </div>
+      <MenuBottom>
+        <Grid _className='btn-bx' is_container>
+          <button type='button' className='btns'>
+            <TiHome />
+          </button>
+          <button type='button' className='btns'>
+            <BiReceipt />
+          </button>
+          <button type='button' className='btns'>
+            <HiOutlineLocationMarker />
+          </button>
+          <button type='button' className='btns'>
+            <RiWechatLine />
+          </button>
+          <button type='button' className='btns'>
+            <FiUser />
+          </button>
+        </Grid>
+      </MenuBottom>
+    </div>
   )
 }
 
@@ -150,6 +152,21 @@ const MenuTop = styled.div`
 `
 const PostListBx = styled.div`
   margin: 42px 0;
+  .parent-position {
+    position: relative;
+  }
+  .plus-btn {
+    position: fixed;
+    top: 86%;
+    right: calc(49.83vw + -201.79px);
+    width: 65px;
+    height: 65px;
+    border: none;
+    border-radius: 50%;
+    background: var(--point-color);
+    color: #fff;
+    font-size: 35px;
+  }
 `
 
 const MenuBottom = styled.div`
