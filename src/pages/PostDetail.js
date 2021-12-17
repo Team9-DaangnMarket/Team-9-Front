@@ -3,7 +3,7 @@ import {useParams} from 'react-router-dom'
 import styled from 'styled-components';
 import {comma, getScrollHeight, copyUrlToClip} from '../shared/util'
 import {axiosInstance} from '../shared/api'
-import { getCookie } from '../shared/Cookie'
+import {getCookie} from '../shared/Cookie'
 
 import {Grid, Button} from '../elements';
 import {BiArrowBack, BiHomeAlt, BiDotsVerticalRounded} from 'react-icons/bi';
@@ -119,8 +119,8 @@ const PostDetail = ({history}) => {
 
   const handleCloseOptModal = (e) => {
     if (
-      e.target.classList.value === "opt-btn" ||
-      e.target.classList.value === "more-icon"
+        e.target.classList.value === "opt-btn" ||
+        e.target.classList.value === "more-icon"
     ) {
       return;
     }
@@ -176,142 +176,142 @@ const PostDetail = ({history}) => {
 
   if (!detail_data) {
     return (
-      <DetailWrap>
-        <nav className={"detail-nav off"} ref={topBarRef}>
-          <Grid
-            is_container
-            is_flex
-            flex_justify={"space-between"}
-            _className={"nav-btns"}
-          >
-            <button
-              type={"button"}
-              className={"back-btn"}
-              onClick={() => (window.location.href = "/")}
+        <DetailWrap>
+          <nav className={"detail-nav off"} ref={topBarRef}>
+            <Grid
+                is_container
+                is_flex
+                flex_justify={"space-between"}
+                _className={"nav-btns"}
             >
-              <BiArrowBack />
-            </button>
-            <button
-              type={"button"}
-              onClick={() => (window.location.href = "/")}
-            >
-              <BiHomeAlt />
-            </button>
-          </Grid>
-        </nav>
+              <button
+                  type={"button"}
+                  className={"back-btn"}
+                  onClick={() => (window.location.href = "/")}
+              >
+                <BiArrowBack/>
+              </button>
+              <button
+                  type={"button"}
+                  onClick={() => (window.location.href = "/")}
+              >
+                <BiHomeAlt/>
+              </button>
+            </Grid>
+          </nav>
 
-        <div className={"not-exist-post"}>
-          <Grid is_container>
-            <div className={"guide-txt"}>존재하지 않는 상품이에요 :(</div>
+          <div className={"not-exist-post"}>
+            <Grid is_container>
+              <div className={"guide-txt"}>존재하지 않는 상품이에요 :(</div>
 
-            <h2 className={"alt-title"}>새로 올라온 중고</h2>
-            <ul className={"alt-list"}>
-              <OtherPost other_list={alt_data} title_show={false} />
-            </ul>
-          </Grid>
-        </div>
-      </DetailWrap>
+              <h2 className={"alt-title"}>새로 올라온 중고</h2>
+              <ul className={"alt-list"}>
+                <OtherPost other_list={alt_data} title_show={false}/>
+              </ul>
+            </Grid>
+          </div>
+        </DetailWrap>
     );
   }
 
   return (
-    <DetailWrap>
-      <nav className={"detail-nav"} ref={topBarRef}>
-        <Grid is_container _className={"nav-btns"}>
-          <div className={"devider"}>
-            <button
-              type={"button"}
-              className={"back-btn"}
-              onClick={() => (window.location.href = "/")}
-            >
-              <BiArrowBack />
-            </button>
-            <button
-              type={"button"}
-              onClick={() => (window.location.href = "/")}
-            >
-              <BiHomeAlt />
-            </button>
-          </div>
-
-          <div className={"devider"}>
-            <button
-              type={"button"}
-              className={"share-btn"}
-              onClick={handleClickCopyUrl}
-            >
-              <BsShare />
-            </button>
-
-            {is_login === detail_data.username && ( // 로그인 아이디와 작성자가 같을 경우
+      <DetailWrap>
+        <nav className={"detail-nav"} ref={topBarRef}>
+          <Grid is_container _className={"nav-btns"}>
+            <div className={"devider"}>
               <button
-                type={"button"}
-                className={"more-btn"}
-                onClick={handleOpenOtpModal}
+                  type={"button"}
+                  className={"back-btn"}
+                  onClick={() => (window.location.href = "/")}
               >
-                <BiDotsVerticalRounded className={"more-icon"} />
-                {opt_modal_open && (
-                  <div className={`opt-modal`}>
-                    <div
-                      type={"button"}
-                      className={"opt-btn"}
-                      onClick={() => handleClickModifyBtn(detail_data.postId)}
-                    >
-                      수정
-                    </div>
-                    <div
-                      type={"button"}
-                      className={"opt-btn"}
-                      onClick={() => handleClickRemoveBtn(detail_data.postId)}
-                    >
-                      삭제
-                    </div>
-                  </div>
-                )}
+                <BiArrowBack/>
               </button>
-            )}
-          </div>
-        </Grid>
-      </nav>
-
-      <div className={"detail-cont"}>
-        <Grid is_container>
-          <div className={"prd-img"}>
-            <div className={"ratio-box"}>
-              <img
-                src={detail_data.goodsImg}
-                alt={""}
-                onError={(e) => (e.target.src = NO_IMG)}
-              />
+              <button
+                  type={"button"}
+                  onClick={() => (window.location.href = "/")}
+              >
+                <BiHomeAlt/>
+              </button>
             </div>
-          </div>
-        </Grid>
 
-        <Grid is_container padding={"0 16px"}>
-          <div className={"user-box"}>
-            <div className={"user-profile"}>
-              <img
-                className={"user-img"}
-                src={
-                  "https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-7e50c459a71e0e88c474406a45bbbdce8a3bf2ed4f2efcae59a064e39ea9ff30.png"
-                }
-                alt={""}
-              />
-              <div className={"user-info"}>
-                <div className={"user-name"}>{detail_data.nickname}</div>
-                <div className={"user-area"}>동네정보없음</div>
+            <div className={"devider"}>
+              <button
+                  type={"button"}
+                  className={"share-btn"}
+                  onClick={handleClickCopyUrl}
+              >
+                <BsShare/>
+              </button>
+
+              {is_login === detail_data.username && ( // 로그인 아이디와 작성자가 같을 경우
+                  <button
+                      type={"button"}
+                      className={"more-btn"}
+                      onClick={handleOpenOtpModal}
+                  >
+                    <BiDotsVerticalRounded className={"more-icon"}/>
+                    {opt_modal_open && (
+                        <div className={`opt-modal`}>
+                          <div
+                              type={"button"}
+                              className={"opt-btn"}
+                              onClick={() => handleClickModifyBtn(detail_data.postId)}
+                          >
+                            수정
+                          </div>
+                          <div
+                              type={"button"}
+                              className={"opt-btn"}
+                              onClick={() => handleClickRemoveBtn(detail_data.postId)}
+                          >
+                            삭제
+                          </div>
+                        </div>
+                    )}
+                  </button>
+              )}
+            </div>
+          </Grid>
+        </nav>
+
+        <div className={"detail-cont"}>
+          <Grid is_container>
+            <div className={"prd-img"}>
+              <div className={"ratio-box"}>
+                <img
+                    src={detail_data.goodsImg}
+                    alt={""}
+                    onError={(e) => (e.target.src = NO_IMG)}
+                />
               </div>
             </div>
+          </Grid>
 
-            <div className={"user-rating"}>
-              <div className={`rating-temp ${setFaceMark(50.5)}`}>
-                <span className={"rating-num"}>50.5 °C</span>
-                <span className={"rating-icon"}></span>
+          <Grid is_container padding={"0 16px"}>
+            <div className={"user-box"}>
+              <div className={"user-profile"}>
+                <img
+                    className={"user-img"}
+                    src={
+                      "https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-7e50c459a71e0e88c474406a45bbbdce8a3bf2ed4f2efcae59a064e39ea9ff30.png"
+                    }
+                    alt={""}
+                />
+                <div className={"user-info"}>
+                  <div className={"user-name"}>{detail_data.nickname}</div>
+                  <div className={"user-area"}>동네정보없음</div>
+                </div>
               </div>
-              <div className={"rating-guide"}>매너온도</div>
+
+              <div className={"user-rating"}>
+                <div className={`rating-temp ${setFaceMark(50.5)}`}>
+                  <span className={"rating-num"}>50.5 °C</span>
+                  <span className={"rating-icon"}></span>
+                </div>
+                <div className={"rating-guide"}>매너온도</div>
+              </div>
             </div>
-          </div>
-        </Grid>
+          </Grid>
 
           <Grid is_container padding={'16px'}>
             <div className={'veiws-count'}>관심 {cnt_value.like}· 조회 {cnt_value.visit}</div>
@@ -319,54 +319,44 @@ const PostDetail = ({history}) => {
               이 게시글 신고하기
             </button>
           </Grid>
+
         </div>
 
-
-        <Grid is_container padding={"16px"}>
-          <div className={"veiws-count"}>
-            관심 {detail_data.postLike}· 조회 {detail_data.visitCount}
-          </div>
-          <button type={"button"} className={"singo-btn"}>
-            이 게시글 신고하기
-          </button>
-        </Grid>
-      </div>
-
-      <div className={"detail-ctrl"}>
-        <Grid
-          is_container
-          is_flex
-          flex_justify={"space-between"}
-          flex_align={"center"}
-          _className={"ctrl-inner"}
-          padding={"16px"}
-        >
-          <button
-            type={"button"}
-            className={`like-btn ${heart ? "on" : ""}`}
-            onClick={() => handleClickLikeBtn(detail_data.postId)}
+        <div className={"detail-ctrl"}>
+          <Grid
+              is_container
+              is_flex
+              flex_justify={"space-between"}
+              flex_align={"center"}
+              _className={"ctrl-inner"}
+              padding={"16px"}
           >
-            <AiFillHeart />
-          </button>
-
-          <div className={"price-opt"}>
-            <strong className={"price"}>{comma(detail_data.price)}원</strong>
             <button
-              type={"button"}
-              className={`nego-btn ${detail_data.negoCheck ? "on" : ""}`}
+                type={"button"}
+                className={`like-btn ${heart ? "on" : ""}`}
+                onClick={() => handleClickLikeBtn(detail_data.postId)}
             >
-              가격 제안하기
+              <AiFillHeart/>
             </button>
-          </div>
 
-          <Button version={"orange"} _className={"chat-btn"}>
-            채팅으로 거래하기
-          </Button>
-        </Grid>
-      </div>
+            <div className={"price-opt"}>
+              <strong className={"price"}>{comma(detail_data.price)}원</strong>
+              <button
+                  type={"button"}
+                  className={`nego-btn ${detail_data.negoCheck ? "on" : ""}`}
+              >
+                가격 제안하기
+              </button>
+            </div>
 
-      <OtherPost other_list={detail_data.insideList} />
-    </DetailWrap>
+            <Button version={"orange"} _className={"chat-btn"}>
+              채팅으로 거래하기
+            </Button>
+          </Grid>
+        </div>
+
+        <OtherPost other_list={detail_data.insideList}/>
+      </DetailWrap>
   );
 };
 
