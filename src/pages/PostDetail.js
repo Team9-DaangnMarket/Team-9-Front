@@ -1,27 +1,29 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import styled from "styled-components";
-import { comma, getScrollHeight, copyUrlToClip } from "../shared/util";
-import { axiosInstance } from "../shared/api";
-import { getCookie } from "../shared/Cookie";
+import React, {useEffect, useRef, useState} from 'react';
+import {useParams} from 'react-router-dom'
+import styled from 'styled-components';
+import {comma, getScrollHeight, copyUrlToClip} from '../shared/util'
+import {axiosInstance} from '../shared/api'
+import { getCookie } from '../shared/Cookie'
 
-import { Grid, Button } from "../elements";
-import { BiArrowBack, BiHomeAlt, BiDotsVerticalRounded } from "react-icons/bi";
-import { BsShare } from "react-icons/bs";
-import { AiFillHeart } from "react-icons/ai";
-import OtherPost from "../components/OtherPost";
+import {Grid, Button} from '../elements';
+import {BiArrowBack, BiHomeAlt, BiDotsVerticalRounded} from 'react-icons/bi';
+import {BsShare} from 'react-icons/bs';
+import {AiFillHeart} from 'react-icons/ai';
+import OtherPost from '../components/OtherPost';
 
-const NO_IMG = "https://www.i-shop.link/home/assets/images/no-image.png";
+const NO_IMG = 'https://www.i-shop.link/home/assets/images/no-image.png'
 
-const PostDetail = ({ history }) => {
-  console.log("[PostDetail]");
-  const is_login = getCookie("id");
-  const params = useParams();
-  const topBarRef = useRef(null);
-  const [heart, setHeart] = useState(true);
-  const [opt_modal_open, setOptModal] = useState(false);
-  const [detail_data, setDetailData] = useState(null);
-  const [alt_data, setAltData] = useState(null);
+const PostDetail = ({history}) => {
+  console.log('[PostDetail]')
+  const is_login = getCookie('id')
+  const params = useParams()
+  const topBarRef = useRef(null)
+  const [heart, setHeart] = useState(true)
+  const [opt_modal_open, setOptModal] = useState(false)
+  const [detail_data, setDetailData] = useState(null)
+  const [alt_data, setAltData] = useState(null)
+  const [cnt_value, setCntValue] = useState({like: 0, visit: 0})
+
 
   // 디테일 상단바 색상 세팅 함수
   const handleHeaderPaint = () => {
@@ -66,8 +68,21 @@ const PostDetail = ({ history }) => {
       alert("알수없는 이유로 기능을 사용할 수 없습니다 :(");
     }
 
-    setHeart(!heart);
-  };
+    if (heart) {
+      setHeart(false)
+      setCntValue({
+        ...cnt_value,
+        like: cnt_value.like - 1
+      })
+    } else {
+      setHeart(true)
+      setCntValue({
+        ...cnt_value,
+        like: cnt_value.like + 1
+      })
+    }
+  }
+
 
   const handleClickCopyUrl = () => {
     copyUrlToClip();
@@ -115,14 +130,18 @@ const PostDetail = ({ history }) => {
 
   const fetchDetailData = async () => {
     try {
-      console.log("params id", params.post_id);
-      const res = await axiosInstance.get(`/posts/${params.post_id}`);
-      setDetailData(res.data);
+      console.log('params id', params.post_id)
+      const res = await axiosInstance.get(`/posts/${params.post_id}`)
+      setDetailData(res.data)
 
-      const isLiked = res.data.likeCheck;
-      console.log("찜 상태", isLiked);
-      setHeart(isLiked);
-      console.log("상세 데이터 조회 성공", res);
+      const isLiked = res.data.likeCheck
+      console.log('찜 상태', isLiked)
+      setHeart(isLiked)
+      setCntValue({
+        like: res.data.postLike,
+        visit: res.data.visitCount
+      })
+      console.log('상세 데이터 조회 성공', res)
     } catch (err) {
       setDetailData(null);
       console.log("상세 데이터 조회 실패", err.response);
@@ -294,14 +313,14 @@ const PostDetail = ({ history }) => {
           </div>
         </Grid>
 
-        <Grid is_container padding={"16px"}>
-          <div className={"cont-title"}>
-            <h2 className={"subject"}>{detail_data.title}</h2>
-            <span className={"category"}>{detail_data.categoryName}</span>
-            <span className={"datetime"}>{detail_data.createdAt}</span>
-          </div>
-          <div className={"cont-desc"}>{detail_data.content}</div>
-        </Grid>
+          <Grid is_container padding={'16px'}>
+            <div className={'veiws-count'}>관심 {cnt_value.like}· 조회 {cnt_value.visit}</div>
+            <button type={'button'} className={'singo-btn'}>
+              이 게시글 신고하기
+            </button>
+          </Grid>
+        </div>
+
 
         <Grid is_container padding={"16px"}>
           <div className={"veiws-count"}>
