@@ -1,314 +1,353 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {useParams} from 'react-router-dom'
-import styled from 'styled-components';
-import {comma, getScrollHeight, copyUrlToClip} from '../shared/util'
-import {axiosInstance} from '../shared/api'
-import { getCookie } from '../shared/Cookie'
+import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import { comma, getScrollHeight, copyUrlToClip } from "../shared/util";
+import { axiosInstance } from "../shared/api";
+import { getCookie } from "../shared/Cookie";
 
-import {Grid, Button} from '../elements';
-import {BiArrowBack, BiHomeAlt, BiDotsVerticalRounded} from 'react-icons/bi';
-import {BsShare} from 'react-icons/bs';
-import {AiFillHeart} from 'react-icons/ai';
-import OtherPost from '../components/OtherPost';
+import { Grid, Button } from "../elements";
+import { BiArrowBack, BiHomeAlt, BiDotsVerticalRounded } from "react-icons/bi";
+import { BsShare } from "react-icons/bs";
+import { AiFillHeart } from "react-icons/ai";
+import OtherPost from "../components/OtherPost";
 
-const NO_IMG = 'https://www.i-shop.link/home/assets/images/no-image.png'
+const NO_IMG = "https://www.i-shop.link/home/assets/images/no-image.png";
 
-const PostDetail = ({history}) => {
-  console.log('[PostDetail]')
-  const is_login = getCookie('id')
-  const params = useParams()
-  const topBarRef = useRef(null)
-  const [heart, setHeart] = useState(true)
-  const [opt_modal_open, setOptModal] = useState(false)
-  const [detail_data, setDetailData] = useState(null)
-  const [alt_data, setAltData] = useState(null)
+const PostDetail = ({ history }) => {
+  console.log("[PostDetail]");
+  const is_login = getCookie("id");
+  const params = useParams();
+  const topBarRef = useRef(null);
+  const [heart, setHeart] = useState(true);
+  const [opt_modal_open, setOptModal] = useState(false);
+  const [detail_data, setDetailData] = useState(null);
+  const [alt_data, setAltData] = useState(null);
 
   // 디테일 상단바 색상 세팅 함수
   const handleHeaderPaint = () => {
-    const topBar = topBarRef?.current
+    const topBar = topBarRef?.current;
 
     if (!topBar) {
-      return
+      return;
     }
 
-    const current = window.pageYOffset
-    const scrollHeight = getScrollHeight()
-    const max = scrollHeight - document.documentElement.clientHeight
-    const percentage = current / max * 100
+    const current = window.pageYOffset;
+    const scrollHeight = getScrollHeight();
+    const max = scrollHeight - document.documentElement.clientHeight;
+    const percentage = (current / max) * 100;
 
-    topBar.style.backgroundColor = `hsl(0deg 0% 100% / ${percentage * 2.5}%)`
-    topBar.style.color = `hsl(0deg 0% ${100 - percentage}%)`
-    topBar.style.borderColor = `hsl(0deg 0% 0% / ${percentage * 0.12}%)`
-  }
+    topBar.style.backgroundColor = `hsl(0deg 0% 100% / ${percentage * 2.5}%)`;
+    topBar.style.color = `hsl(0deg 0% ${100 - percentage}%)`;
+    topBar.style.borderColor = `hsl(0deg 0% 0% / ${percentage * 0.12}%)`;
+  };
 
   // 온도별 face image (face-6 최상 -> face-1 최하)
   const setFaceMark = (temp) => {
     if (temp >= 80) {
-      return 'face-6'
+      return "face-6";
     } else if (temp < 80 && temp >= 60) {
-      return 'face-5'
+      return "face-5";
     } else if (temp < 60 && temp >= 50) {
-      return 'face-4'
+      return "face-4";
     } else if (temp < 50 && temp >= 40) {
-      return 'face-3'
+      return "face-3";
     } else if (temp < 40 && temp >= 30) {
-      return 'face-2'
+      return "face-2";
     } else if (temp < 30) {
-      return 'face-1'
-
+      return "face-1";
     }
-  }
+  };
 
   const handleClickLikeBtn = async (post_id) => {
     try {
-      const res = await axiosInstance.post(`/postLike/${post_id}`)
-      console.log('찜하기 API 결과', res)
+      const res = await axiosInstance.post(`/postLike/${post_id}`);
+      console.log("찜하기 API 결과", res);
     } catch (err) {
-      alert('알수없는 이유로 기능을 사용할 수 없습니다 :(')
+      alert("알수없는 이유로 기능을 사용할 수 없습니다 :(");
     }
 
-    setHeart(!heart)
-  }
+    setHeart(!heart);
+  };
 
   const handleClickCopyUrl = () => {
-    copyUrlToClip()
-    alert('링크가 복사되었습니다.')
-  }
+    copyUrlToClip();
+    alert("링크가 복사되었습니다.");
+  };
 
   const handleOpenOtpModal = (e) => {
-    setOptModal(true)
-  }
+    setOptModal(true);
+  };
 
   const sendDeletePost = async (post_id) => {
-    const delete_confirm = window.confirm('정말로 삭제하시겠습니까?')
+    const delete_confirm = window.confirm("정말로 삭제하시겠습니까?");
     if (delete_confirm) {
       try {
-        const res = await axiosInstance.delete(`/posts/${post_id}`)
-        console.log('데이터 삭제 성공', res)
-        window.location.href = '/'
+        const res = await axiosInstance.delete(`/posts/${post_id}`);
+        console.log("데이터 삭제 성공", res);
+        window.location.href = "/";
       } catch (err) {
-        alert('삭제 할 수 없습니다 :(')
-        console.log('데이터 삭제 실패', err.response)
+        alert("삭제 할 수 없습니다 :(");
+        console.log("데이터 삭제 실패", err.response);
       }
     }
-  }
+  };
 
   const handleClickRemoveBtn = (post_id) => {
-    sendDeletePost(post_id)
-    setOptModal(false)
-  }
+    sendDeletePost(post_id);
+    setOptModal(false);
+  };
 
   const handleClickModifyBtn = (post_id) => {
-    setOptModal(false)
-    history.push(`/write/${post_id}`)
-  }
+    setOptModal(false);
+    history.push(`/write/${post_id}`);
+  };
 
   const handleCloseOptModal = (e) => {
-    if (e.target.classList.value === 'opt-btn' || e.target.classList.value === 'more-icon') {
-      return
+    if (
+      e.target.classList.value === "opt-btn" ||
+      e.target.classList.value === "more-icon"
+    ) {
+      return;
     }
 
-    setOptModal(false)
-  }
+    setOptModal(false);
+  };
 
   const fetchDetailData = async () => {
     try {
-      console.log('params id', params.post_id)
-      const res = await axiosInstance.get(`/posts/${params.post_id}`)
-      setDetailData(res.data)
+      console.log("params id", params.post_id);
+      const res = await axiosInstance.get(`/posts/${params.post_id}`);
+      setDetailData(res.data);
 
-      const isLiked = res.data.likeCheck
-      console.log('찜 상태', isLiked)
-      setHeart(isLiked)
-      console.log('상세 데이터 조회 성공', res)
+      const isLiked = res.data.likeCheck;
+      console.log("찜 상태", isLiked);
+      setHeart(isLiked);
+      console.log("상세 데이터 조회 성공", res);
     } catch (err) {
-      setDetailData(null)
-      console.log('상세 데이터 조회 실패', err.response)
+      setDetailData(null);
+      console.log("상세 데이터 조회 실패", err.response);
     }
-  }
+  };
 
   const fetchAltData = async () => {
     try {
-      const res = await axiosInstance.get(`/posts?page=0&size=6`)
-      console.log('대체 데이터 조회 성공', res)
-      setAltData(res.data)
+      const res = await axiosInstance.get(`/posts?page=0&size=6`);
+      console.log("대체 데이터 조회 성공", res);
+      setAltData(res.data);
     } catch (err) {
-      setAltData(null)
-      console.log('대체 데이터 조회 실패', err.response)
+      setAltData(null);
+      console.log("대체 데이터 조회 실패", err.response);
     }
-  }
+  };
 
   useEffect(() => {
-
-    window.addEventListener('scroll', handleHeaderPaint)
-    window.addEventListener('click', handleCloseOptModal)
+    window.addEventListener("scroll", handleHeaderPaint);
+    window.addEventListener("click", handleCloseOptModal);
 
     return () => {
-      window.removeEventListener('scroll', handleHeaderPaint)
-      window.addEventListener('click', handleCloseOptModal)
-    }
-  }, [])
+      window.removeEventListener("scroll", handleHeaderPaint);
+      window.addEventListener("click", handleCloseOptModal);
+    };
+  }, []);
 
   useEffect(() => {
-    fetchDetailData()
-    fetchAltData()
-  }, [params])
-
+    fetchDetailData();
+    fetchAltData();
+  }, [params]);
 
   if (!detail_data) {
     return (
-        <DetailWrap>
-          <nav className={'detail-nav off'} ref={topBarRef}>
-            <Grid is_container is_flex flex_justify={'space-between'} _className={'nav-btns'}>
-              <button type={'button'} className={'back-btn'} onClick={() => history.goBack()}>
-                <BiArrowBack/>
-              </button>
-              <button type={'button'} onClick={() => history.push('/')}>
-                <BiHomeAlt/>
-              </button>
-            </Grid>
-          </nav>
-
-          <div className={'not-exist-post'}>
-            <Grid is_container>
-              <div className={'guide-txt'}>
-                존재하지 않는 상품이에요 :(
-              </div>
-
-              <h2 className={'alt-title'}>새로 올라온 중고</h2>
-              <ul className={'alt-list'}>
-                <OtherPost other_list={alt_data} title_show={false}/>
-              </ul>
-            </Grid>
-          </div>
-        </DetailWrap>
-    )
-  }
-
-  return (
       <DetailWrap>
-        <nav className={'detail-nav'} ref={topBarRef}>
-          <Grid is_container _className={'nav-btns'}>
-            <div className={'devider'}>
-              <button type={'button'} className={'back-btn'} onClick={() => history.goBack()}>
-                <BiArrowBack/>
-              </button>
-              <button type={'button'} onClick={() => history.push('/')}>
-                <BiHomeAlt/>
-              </button>
-            </div>
-
-            <div className={'devider'}>
-              <button type={'button'} className={'share-btn'} onClick={handleClickCopyUrl}>
-                <BsShare/>
-              </button>
-
-              {
-                  is_login === detail_data.username // 로그인 아이디와 작성자가 같을 경우
-                  && (
-                      <button type={'button'} className={'more-btn'} onClick={handleOpenOtpModal}>
-                        <BiDotsVerticalRounded className={'more-icon'}/>
-                        {
-                            opt_modal_open
-                            && (
-                                <div className={`opt-modal`}>
-                                  <div type={'button'} className={'opt-btn'} onClick={() => handleClickModifyBtn(detail_data.postId)}>수정</div>
-                                  <div type={'button'} className={'opt-btn'} onClick={() => handleClickRemoveBtn(detail_data.postId)}>삭제</div>
-                                </div>
-                            )
-                        }
-                      </button>
-                  )
-              }
-
-            </div>
+        <nav className={"detail-nav off"} ref={topBarRef}>
+          <Grid
+            is_container
+            is_flex
+            flex_justify={"space-between"}
+            _className={"nav-btns"}
+          >
+            <button
+              type={"button"}
+              className={"back-btn"}
+              onClick={() => (window.location.href = "/")}
+            >
+              <BiArrowBack />
+            </button>
+            <button
+              type={"button"}
+              onClick={() => (window.location.href = "/")}
+            >
+              <BiHomeAlt />
+            </button>
           </Grid>
         </nav>
 
-        <div className={'detail-cont'}>
+        <div className={"not-exist-post"}>
           <Grid is_container>
-            <div className={'prd-img'}>
-              <div className={'ratio-box'}>
-                <img
-                    src={detail_data.goodsImg}
-                    alt={''}
-                    onError={(e) => e.target.src = NO_IMG}
-                />
-              </div>
-            </div>
-          </Grid>
+            <div className={"guide-txt"}>존재하지 않는 상품이에요 :(</div>
 
-          <Grid is_container padding={'0 16px'}>
-            <div className={'user-box'}>
-              <div className={'user-profile'}>
-                <img
-                    className={'user-img'}
-                    src={
-                      'https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-7e50c459a71e0e88c474406a45bbbdce8a3bf2ed4f2efcae59a064e39ea9ff30.png'
-                    }
-                    alt={''}
-                />
-                <div className={'user-info'}>
-                  <div className={'user-name'}>{detail_data.nickname}</div>
-                  <div className={'user-area'}>동네정보없음</div>
-                </div>
-              </div>
-
-              <div className={'user-rating'}>
-                <div className={`rating-temp ${setFaceMark(50.5)}`}>
-                  <span className={'rating-num'}>50.5 °C</span>
-                  <span className={'rating-icon'}></span>
-                </div>
-                <div className={'rating-guide'}>매너온도</div>
-              </div>
-            </div>
-          </Grid>
-
-          <Grid is_container padding={'16px'}>
-            <div className={'cont-title'}>
-              <h2 className={'subject'}>{detail_data.title}</h2>
-              <span className={'category'}>{detail_data.categoryName}</span>
-              <span className={'datetime'}>{detail_data.createdAt}</span>
-            </div>
-            <div className={'cont-desc'}>{detail_data.content}</div>
-          </Grid>
-
-          <Grid is_container padding={'16px'}>
-            <div className={'veiws-count'}>관심 {detail_data.postLike}· 조회 {detail_data.visitCount}</div>
-            <button type={'button'} className={'singo-btn'}>
-              이 게시글 신고하기
-            </button>
+            <h2 className={"alt-title"}>새로 올라온 중고</h2>
+            <ul className={"alt-list"}>
+              <OtherPost other_list={alt_data} title_show={false} />
+            </ul>
           </Grid>
         </div>
-
-        <div className={'detail-ctrl'}>
-          <Grid
-              is_container
-              is_flex
-              flex_justify={'space-between'}
-              flex_align={'center'}
-              _className={'ctrl-inner'}
-              padding={'16px'}
-          >
-            <button type={'button'} className={`like-btn ${heart ? 'on' : ''}`} onClick={() => handleClickLikeBtn(detail_data.postId)}>
-              <AiFillHeart/>
-            </button>
-
-            <div className={'price-opt'}>
-              <strong className={'price'}>{comma(detail_data.price)}원</strong>
-              <button type={'button'} className={`nego-btn ${detail_data.negoCheck ? 'on' : ''}`}>
-                가격 제안하기
-              </button>
-            </div>
-
-            <Button version={'orange'} _className={'chat-btn'}>
-              채팅으로 거래하기
-            </Button>
-          </Grid>
-        </div>
-
-        <OtherPost other_list={detail_data.insideList}/>
       </DetailWrap>
+    );
+  }
+
+  return (
+    <DetailWrap>
+      <nav className={"detail-nav"} ref={topBarRef}>
+        <Grid is_container _className={"nav-btns"}>
+          <div className={"devider"}>
+            <button
+              type={"button"}
+              className={"back-btn"}
+              onClick={() => (window.location.href = "/")}
+            >
+              <BiArrowBack />
+            </button>
+            <button
+              type={"button"}
+              onClick={() => (window.location.href = "/")}
+            >
+              <BiHomeAlt />
+            </button>
+          </div>
+
+          <div className={"devider"}>
+            <button
+              type={"button"}
+              className={"share-btn"}
+              onClick={handleClickCopyUrl}
+            >
+              <BsShare />
+            </button>
+
+            {is_login === detail_data.username && ( // 로그인 아이디와 작성자가 같을 경우
+              <button
+                type={"button"}
+                className={"more-btn"}
+                onClick={handleOpenOtpModal}
+              >
+                <BiDotsVerticalRounded className={"more-icon"} />
+                {opt_modal_open && (
+                  <div className={`opt-modal`}>
+                    <div
+                      type={"button"}
+                      className={"opt-btn"}
+                      onClick={() => handleClickModifyBtn(detail_data.postId)}
+                    >
+                      수정
+                    </div>
+                    <div
+                      type={"button"}
+                      className={"opt-btn"}
+                      onClick={() => handleClickRemoveBtn(detail_data.postId)}
+                    >
+                      삭제
+                    </div>
+                  </div>
+                )}
+              </button>
+            )}
+          </div>
+        </Grid>
+      </nav>
+
+      <div className={"detail-cont"}>
+        <Grid is_container>
+          <div className={"prd-img"}>
+            <div className={"ratio-box"}>
+              <img
+                src={detail_data.goodsImg}
+                alt={""}
+                onError={(e) => (e.target.src = NO_IMG)}
+              />
+            </div>
+          </div>
+        </Grid>
+
+        <Grid is_container padding={"0 16px"}>
+          <div className={"user-box"}>
+            <div className={"user-profile"}>
+              <img
+                className={"user-img"}
+                src={
+                  "https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-7e50c459a71e0e88c474406a45bbbdce8a3bf2ed4f2efcae59a064e39ea9ff30.png"
+                }
+                alt={""}
+              />
+              <div className={"user-info"}>
+                <div className={"user-name"}>{detail_data.nickname}</div>
+                <div className={"user-area"}>동네정보없음</div>
+              </div>
+            </div>
+
+            <div className={"user-rating"}>
+              <div className={`rating-temp ${setFaceMark(50.5)}`}>
+                <span className={"rating-num"}>50.5 °C</span>
+                <span className={"rating-icon"}></span>
+              </div>
+              <div className={"rating-guide"}>매너온도</div>
+            </div>
+          </div>
+        </Grid>
+
+        <Grid is_container padding={"16px"}>
+          <div className={"cont-title"}>
+            <h2 className={"subject"}>{detail_data.title}</h2>
+            <span className={"category"}>{detail_data.categoryName}</span>
+            <span className={"datetime"}>{detail_data.createdAt}</span>
+          </div>
+          <div className={"cont-desc"}>{detail_data.content}</div>
+        </Grid>
+
+        <Grid is_container padding={"16px"}>
+          <div className={"veiws-count"}>
+            관심 {detail_data.postLike}· 조회 {detail_data.visitCount}
+          </div>
+          <button type={"button"} className={"singo-btn"}>
+            이 게시글 신고하기
+          </button>
+        </Grid>
+      </div>
+
+      <div className={"detail-ctrl"}>
+        <Grid
+          is_container
+          is_flex
+          flex_justify={"space-between"}
+          flex_align={"center"}
+          _className={"ctrl-inner"}
+          padding={"16px"}
+        >
+          <button
+            type={"button"}
+            className={`like-btn ${heart ? "on" : ""}`}
+            onClick={() => handleClickLikeBtn(detail_data.postId)}
+          >
+            <AiFillHeart />
+          </button>
+
+          <div className={"price-opt"}>
+            <strong className={"price"}>{comma(detail_data.price)}원</strong>
+            <button
+              type={"button"}
+              className={`nego-btn ${detail_data.negoCheck ? "on" : ""}`}
+            >
+              가격 제안하기
+            </button>
+          </div>
+
+          <Button version={"orange"} _className={"chat-btn"}>
+            채팅으로 거래하기
+          </Button>
+        </Grid>
+      </div>
+
+      <OtherPost other_list={detail_data.insideList} />
+    </DetailWrap>
   );
 };
 
@@ -349,7 +388,6 @@ const DetailWrap = styled.section`
     }
 
     .alt-list {
-
     }
   }
 
@@ -395,7 +433,7 @@ const DetailWrap = styled.section`
     right: 50%;
     background-color: #fff;
     border: 1px solid var(--border-color);
-    box-shadow: 0 0 12px rgba(0, 0, 0, .3);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
     display: block;
 
     .opt-btn {
@@ -462,7 +500,7 @@ const DetailWrap = styled.section`
       }
 
       &::after {
-        content: '';
+        content: "";
         display: block;
         width: 1px;
         height: 80%;
@@ -645,7 +683,7 @@ const DetailWrap = styled.section`
         height: 24px;
         background-position: 0 -123px;
         background-size: 29px 147px;
-        background-image: url('https://d1unjqcospf8gs.cloudfront.net/assets/home/articles/face-icon-set-0cffc52be32961b0bb4a308c272d8f526ddcdeda66dbde6eb32618eeb22b74e6.png');
+        background-image: url("https://d1unjqcospf8gs.cloudfront.net/assets/home/articles/face-icon-set-0cffc52be32961b0bb4a308c272d8f526ddcdeda66dbde6eb32618eeb22b74e6.png");
       }
 
       .rating-guide {

@@ -1,20 +1,19 @@
-import React, {useState, useRef, useEffect} from "react";
-import {axiosInstance} from "../shared/api";
-import {useParams} from "react-router-dom";
-import {getCookie} from '../shared/Cookie'
+import React, { useState, useRef, useEffect } from "react";
+import { axiosInstance } from "../shared/api";
+import { useParams } from "react-router-dom";
+import { getCookie } from "../shared/Cookie";
 
-import {Grid, Button, Input} from "../elements";
-import {storage} from "../shared/firebase";
-import {dummyCate} from "../shared/util";
+import { Grid, Button, Input } from "../elements";
+import { storage } from "../shared/firebase";
+import { dummyCate } from "../shared/util";
 import styled from "styled-components";
-import {GoSettings} from "react-icons/go";
-import {MdOutlinePostAdd, MdOutlineClose} from "react-icons/md";
-import {BiArrowBack} from "react-icons/bi";
-import {FaChevronRight, FaCamera} from "react-icons/fa";
+import { GoSettings } from "react-icons/go";
+import { MdOutlinePostAdd, MdOutlineClose } from "react-icons/md";
+import { BiArrowBack } from "react-icons/bi";
+import { FaChevronRight, FaCamera } from "react-icons/fa";
 
 const PostWrite = (props) => {
-  const {history} = props
-  const {post_id} = useParams();
+  const { post_id } = useParams();
   const [_post, set_Post] = useState("");
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState(0);
@@ -22,7 +21,7 @@ const PostWrite = (props) => {
   const [content, setContent] = useState("");
   const [preview, setPreview] = useState("");
   const [img_url, setImg_url] = useState();
-  const cbRef = useRef(null)
+  const cbRef = useRef(null);
 
   //modal open
   const [isOpen, setIsOpen] = useState(false);
@@ -31,35 +30,34 @@ const PostWrite = (props) => {
   useEffect(() => {
     if (post_id) {
       axiosInstance
-          .get(`/posts/${post_id}`)
-          .then((res) => {
-            set_Post(res.data);
-            setCate(res.data.categoryName);
-            setImg_url(res.data.goodsImg)
-            setPreview(res.data.goodsImg)
-            setPrice(res.data.price)
-            setTitle(res.data.title)
-            setContent(res.data.content)
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        .get(`/posts/${post_id}`)
+        .then((res) => {
+          set_Post(res.data);
+          setCate(res.data.categoryName);
+          setImg_url(res.data.goodsImg);
+          setPreview(res.data.goodsImg);
+          setPrice(res.data.price);
+          setTitle(res.data.title);
+          setContent(res.data.content);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-
   }, []);
 
   useEffect(() => {
     if (price) {
-      cbRef.current.checked = true
-      cbRef.current.disabled = false
+      cbRef.current.checked = true;
+      cbRef.current.disabled = false;
     } else {
-      cbRef.current.checked = false
-      cbRef.current.disabled = true
+      cbRef.current.checked = false;
+      cbRef.current.disabled = true;
     }
-  }, [price])
+  }, [price]);
 
-  //이미지 파일명 생성을 위한 가짜 유저아이디
-  const user_id = getCookie('id');
+  //이미지 파일명 생성을 위한 유저아이디
+  const user_id = getCookie("id");
 
   //upload file
   const fileInput = useRef();
@@ -93,204 +91,232 @@ const PostWrite = (props) => {
   //포스트 업로드
   const addPost = () => {
     if (!preview) {
-      alert('사진을 업로드 해주세요')
-      return
+      alert("사진을 업로드 해주세요");
+      return;
     }
 
-    console.log(title, content, price, cate)
-      if (!title || !content || !price || !cate === "카테고리") {
+    console.log(title, content, price, cate);
+    if (!title || !content || !price || !cate === "카테고리") {
       window.alert("빈 공간을 채워주세요!");
       return;
     }
 
-      // 새로운 게시물 작성 일때와 수정 일때 로직 분기
-      if (!post_id) {
+    // 새로운 게시물 작성 일때와 수정 일때 로직 분기
+    if (!post_id) {
+      const storageRef = storage.ref(fileInput.current.files[0].name);
+      storage
+        .ref(`images/${user_id}_${new Date().getTime()}`)
+        .putString(preview, "data_url")
+        .then(function (snapshot) {
+          snapshot.ref.getDownloadURL().then((url) => {
+            console.log("스냅샷 URL", url);
+            //axios
+            axiosInstance
+              .post("/posts", {
+                title: title,
+                content: content,
+                price: price,
+                goodsImg: url,
+                negoCheck: true,
+                categoryName: cate,
+              })
+              .then((res) => {
+                console.log(res);
+                window.location.href = "/";
+              })
+              .catch((err) => console.log(err));
+          });
+        });
+    } else {
+      const file = fileInput.current.files[0];
+      if (file) {
         const storageRef = storage.ref(fileInput.current.files[0].name);
         storage
-            .ref(`images/${user_id}_${new Date().getTime()}`)
-            .putString(preview, "data_url")
-            .then(function (snapshot) {
-              snapshot.ref.getDownloadURL().then((url) => {
-                console.log("스냅샷 URL", url);
-                //axios
-                axiosInstance
-                    .post("/posts", {
-                      title: title,
-                      content: content,
-                      price: price,
-                      goodsImg: url,
-                      negoCheck: true,
-                      categoryName: cate,
-                    })
-                    .then((res) => {
-                      console.log(res)
-                      window.location.href = '/'
-                    })
-                    .catch((err) => console.log(err));
-              });
+          .ref(`images/${user_id}_${new Date().getTime()}`)
+          .putString(preview, "data_url")
+          .then(function (snapshot) {
+            snapshot.ref.getDownloadURL().then((url) => {
+              console.log("스냅샷 URL", url);
+              //axios
+              axiosInstance
+                .put(`/posts/${post_id}`, {
+                  title: title,
+                  content: content,
+                  price: price,
+                  goodsImg: url,
+                  negoCheck: true,
+                  categoryName: cate,
+                })
+                .then((res) => {
+                  console.log(res);
+                  window.location.href = "/";
+                })
+                .catch((err) => console.log(err));
             });
+          });
       } else {
         axiosInstance
-            .post("/posts", {
-              title: title,
-              content: content,
-              price: price,
-              goodsImg: img_url,
-              negoCheck: true,
-              categoryName: cate,
-            })
-            .then((res) => {
-              console.log(res)
-              history.replace('/')
-            })
-            .catch((err) => console.log(err));
+          .put(`/posts/${post_id}`, {
+            title: title,
+            content: content,
+            price: price,
+            goodsImg: img_url,
+            negoCheck: true,
+            categoryName: cate,
+          })
+          .then((res) => {
+            console.log(res);
+            window.location.href = "/";
+          })
+          .catch((err) => console.log(err));
       }
-
+    }
   };
 
   return (
-      <>
-        <WriteBox>
-          <Grid is_container>
-            <Grid _className="title">
-              <Grid
-                  is_flex
-                  flex_align="center;"
-                  flex_justify="space-between;"
-                  _className="title-inner"
-              >
-                <p>
-                  <BiArrowBack onClick={() => history.replace('/')} style={{cursor: 'pointer'}}/>
-                </p>
-                <h3>중고거래 글쓰기</h3>
-                {post_id ? (
-                    <Button _className="btn" _onClick={addPost}>
-                      수정
-                    </Button>
-                ) : (
-                    <Button _className="btn" _onClick={addPost}>
-                      완료
-                    </Button>
-                )}
-              </Grid>
-            </Grid>
-            <UploadBox>
-              <UploadBtn onClick={handleClick}>
-                <FaCamera/>
-                <input
-                    type="file"
-                    className="fileUpload"
-                    ref={fileInput}
-                    onChange={selectFile}
+    <>
+      <WriteBox>
+        <Grid is_container>
+          <Grid _className="title">
+            <Grid
+              is_flex
+              flex_align="center;"
+              flex_justify="space-between;"
+              _className="title-inner"
+            >
+              <p>
+                <BiArrowBack
+                  onClick={() => (window.location.href = "/")}
+                  style={{ cursor: "pointer" }}
                 />
-              </UploadBtn>
-              {preview ? (
-                  <>
-                    <UploadImg>
-                      <img src={preview} alt="pre_img"/>
-                      <button onClick={() => {
-                        setPreview("")
-                        fileInput.current.value = null
-                      }}>
-                        <MdOutlineClose/>
-                      </button>
-                    </UploadImg>
-                  </>
-              ) : null}
-            </UploadBox>
-            <Grid>
-              <Input
-                  placeholder="글 제목(최대 20자)"
-                  _onChange={titleOnChange}
-                  value={_post?.title}
-                  max="20"
-              />
-            </Grid>
-            <SelectBox>
-              <div className="cate" onClick={openModal}>
-                {cate}
-                <span>
-                <FaChevronRight/>
-              </span>
-              </div>
-              {isOpen && (
-                  <>
-                    <Modal>
-                      <div className="shadow"></div>
-                      <ul>
-                        {dummyCate.map((c, i) => {
-                          return (
-                              <li key={`cate-id-${i}`}
-                                  onClick={() => {
-                                    setIsOpen(false);
-                                    setCate(`${c}`);
-                                  }}
-                              >
-                                {c}
-                              </li>
-                          );
-                        })}
-                      </ul>
-                    </Modal>
-                  </>
+              </p>
+              <h3>중고거래 글쓰기</h3>
+              {post_id ? (
+                <Button _className="btn" _onClick={addPost}>
+                  수정
+                </Button>
+              ) : (
+                <Button _className="btn" _onClick={addPost}>
+                  완료
+                </Button>
               )}
-            </SelectBox>
-            <Grid is_flex>
-              <Grid is_flex _className="price-box">
-                <Cur cur={price}>\</Cur>
-                <Input
-                    type={'number'}
-                    placeholder="가격 (선택사항)"
-                    _className="price"
-                    _onChange={priceOnChange}
-                    value={_post?.price}
-                ></Input>
-              </Grid>
-
-              <Grid _className="price-checkbox">
-                <label className="control control--checkbox">
-                  가격 제안받기
-                  <input
-                      type="checkbox"
-                      ref={cbRef}
-                      // checked={price ? "checked" : null}
-                      // disabled={price ? false : true}
-                  />
-                  <div className="control__indicator"></div>
-                </label>
-              </Grid>
             </Grid>
-            <textarea
-                cols="20"
-                rows="30"
-                defaultValue={_post?.content}
-                className="textarea"
-                type="textarea"
-                placeholder="올릴 게시글 내용을 작성해주세요.(가품 및 판매금지품목은 게시가 제한될 수 있어요.)"
-                onChange={(e) => {
-                  setContent(e.target.value);
-                }}
-            />
-            <SettingCtrl>
-              <Grid
-                  is_flex
-                  flex_align="center;"
-                  _className="setting-inner"
-                  padding="16px"
-              >
-              <span>
-                <MdOutlinePostAdd/>
-              </span>
-                <h5>자주 쓰는 문구</h5>
-                <span>
-                <GoSettings/>
-              </span>
-                <h5>보여줄 동네 설정</h5>
-              </Grid>
-            </SettingCtrl>
           </Grid>
-        </WriteBox>
-      </>
+          <UploadBox>
+            <UploadBtn onClick={handleClick}>
+              <FaCamera />
+              <input
+                type="file"
+                className="fileUpload"
+                ref={fileInput}
+                onChange={selectFile}
+              />
+            </UploadBtn>
+            {preview ? (
+              <>
+                <UploadImg>
+                  <img src={preview} alt="pre_img" />
+                  <button
+                    onClick={() => {
+                      setPreview("");
+                      fileInput.current.value = null;
+                    }}
+                  >
+                    <MdOutlineClose />
+                  </button>
+                </UploadImg>
+              </>
+            ) : null}
+          </UploadBox>
+          <Grid>
+            <Input
+              placeholder="글 제목(최대 20자)"
+              _onChange={titleOnChange}
+              value={_post?.title}
+              max="20"
+            />
+          </Grid>
+          <SelectBox>
+            <div className="cate" onClick={openModal}>
+              {cate}
+              <span>
+                <FaChevronRight />
+              </span>
+            </div>
+            {isOpen && (
+              <>
+                <Modal>
+                  <div className="shadow"></div>
+                  <ul>
+                    {dummyCate.map((c, i) => {
+                      return (
+                        <li
+                          key={`cate-id-${i}`}
+                          onClick={() => {
+                            setIsOpen(false);
+                            setCate(`${c}`);
+                          }}
+                        >
+                          {c}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </Modal>
+              </>
+            )}
+          </SelectBox>
+          <Grid is_flex>
+            <Grid is_flex _className="price-box">
+              <Cur cur={price}>\</Cur>
+              <Input
+                type={"number"}
+                placeholder="가격 (선택사항)"
+                _className="price"
+                _onChange={priceOnChange}
+                value={_post?.price}
+              ></Input>
+            </Grid>
+
+            <Grid _className="price-checkbox">
+              <label className="control control--checkbox">
+                가격 제안받기
+                <input type="checkbox" ref={cbRef} />
+                <div className="control__indicator"></div>
+              </label>
+            </Grid>
+          </Grid>
+          <textarea
+            cols="20"
+            rows="30"
+            defaultValue={_post?.content}
+            className="textarea"
+            type="textarea"
+            placeholder="올릴 게시글 내용을 작성해주세요.(가품 및 판매금지품목은 게시가 제한될 수 있어요.)"
+            onChange={(e) => {
+              setContent(e.target.value);
+            }}
+          />
+          <SettingCtrl>
+            <Grid
+              is_flex
+              flex_align="center;"
+              _className="setting-inner"
+              padding="16px"
+            >
+              <span>
+                <MdOutlinePostAdd />
+              </span>
+              <h5>자주 쓰는 문구</h5>
+              <span>
+                <GoSettings />
+              </span>
+              <h5>보여줄 동네 설정</h5>
+            </Grid>
+          </SettingCtrl>
+        </Grid>
+      </WriteBox>
+    </>
   );
 };
 
@@ -424,7 +450,7 @@ const Cur = styled.div`
   display: flex;
   align-items: center;
   color: ${(props) =>
-          props.cur ? `var(--main-font-color)` : `var(--sub-font-color)`};
+    props.cur ? `var(--main-font-color)` : `var(--sub-font-color)`};
 `;
 
 // 상품 사진 업로드
