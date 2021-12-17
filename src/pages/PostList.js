@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { actionCreators as postActions } from '../redux/modules/post'
+import { actionCreators as searchActions } from '../redux/modules/search'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Grid, Button } from '../elements'
@@ -53,7 +54,7 @@ const PostList = (props) => {
             <Grid is_container _className='top-btns'>
               <button onClick={() => {
                 history.push('/search')
-                dispatch(searchAction.setKeyword(null))
+                dispatch(searchActions.setKeyword(null))
               }}>
                 <HiOutlineSearch />
               </button>
