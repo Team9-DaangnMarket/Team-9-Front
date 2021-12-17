@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import {axiosInstance} from '../shared/api'
 import { actionCreators as searchAction } from '../redux/modules/search'
+import _ from 'lodash'
 
 import {Grid} from '../elements'
 import {BiArrowBack} from 'react-icons/bi'
@@ -21,7 +22,7 @@ const SearchList = (props) => {
 
   const fetchSearchData = async (keyword) => {
     try {
-      const res = await axiosInstance.get(`/search?keyword=${keyword}&page=0&size=4`)
+      const res = await axiosInstance.get(`/search?keyword=${keyword}&page=0&size=20`)
       return res.data
     }
     catch (err) {
@@ -37,7 +38,7 @@ const SearchList = (props) => {
     dispatch(searchAction.setKeyword(keyword))
   }
 
-  const handleStartSearch = async (e) => {
+  const _handleStartSearch = async (e) => {
     if (is_loading) {
       return
     }
@@ -51,14 +52,18 @@ const SearchList = (props) => {
       }
 
       setIsLoading(true)
+      searchInputRef.current.disabled = true
       updateSearchState(keyword)
 
     }
 
     setTimeout(() => {
       setIsLoading(false)
+      searchInputRef.current.disabled = false
     }, 1500)
   }
+
+  const handleStartSearch = _.debounce(_handleStartSearch, 200)
 
   useEffect(() => {
     if (prevKeyword) {
