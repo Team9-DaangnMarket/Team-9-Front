@@ -1,18 +1,18 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import {comma} from '../shared/util'
-import {useLocation} from 'react-router-dom'
-import {history} from '../redux/configureStore'
-import {axiosInstance} from '../shared/api'
+import { comma } from '../shared/util'
+import { useLocation } from 'react-router-dom'
+import { history } from '../redux/configureStore'
+import { axiosInstance } from '../shared/api'
 
-import {AiFillHeart, AiOutlineHeart} from 'react-icons/ai'
-import {IoChatbubblesOutline} from 'react-icons/io5'
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
+import { IoChatbubblesOutline } from 'react-icons/io5'
 
 const NO_IMG = 'https://www.i-shop.link/home/assets/images/no-image.png'
 
 const PostItem = (props) => {
   const location = useLocation()
-  const {pathname} = location
+  const { pathname } = location
   const [heart_on, setHeartOn] = useState(props.post.likeCheck)
 
   const handleClickHeart = async () => {
@@ -32,40 +32,40 @@ const PostItem = (props) => {
   }
 
   return (
-      <ItemBox>
-        <div className={'item-top'}>
-          <div className={'item-img'} onClick={handleClickGoDetail}>
-            <img
-                src={props.post.goodsImg}
-                alt=''
-                onError={(e) => e.target.src = NO_IMG}
+    <ItemBox>
+      <div className={'item-top'}>
+        <div className={'item-img'} onClick={handleClickGoDetail}>
+          <img
+            src={props.post.goodsImg}
+            alt=''
+            onError={(e) => (e.target.src = NO_IMG)}
+          />
+        </div>
+        <div className={'item-detail'} onClick={handleClickGoDetail}>
+          <strong className={'subject'}>{props.post.title}</strong>
+          <span className={'area'}>동네정보없음</span>
+          <span className={'price'}>{comma(`${props.post.price}`)}원</span>
+        </div>
+        {pathname === '/likelist' && (
+          <div className={'opt-group'}>
+            <AiFillHeart
+              className={`heart-btn ${heart_on ? 'on' : ''}`}
+              onClick={handleClickHeart}
             />
           </div>
-          <div className={'item-detail'} onClick={handleClickGoDetail}>
-            <strong className={'subject'}>{props.post.title}</strong>
-            <span className={'area'}>동네정보없음</span>
-            <span className={'price'}>{comma(`${props.post.price}`)}원</span>
-          </div>
-          {pathname === '/likelist' && (
-              <div className={'opt-group'}>
-                <AiFillHeart
-                    className={`heart-btn ${heart_on ? 'on' : ''}`}
-                    onClick={handleClickHeart}
-                />
-              </div>
-          )}
+        )}
+      </div>
+      <div className={'item-bottom'}>
+        <div className={'icon-box'}>
+          <IoChatbubblesOutline />
+          <span>0</span>
         </div>
-        <div className={'item-bottom'}>
-          <div className={'icon-box'}>
-            <IoChatbubblesOutline/>
-            <span>0</span>
-          </div>
-          <div className={'icon-box'}>
-            <AiOutlineHeart/>
-            <span>{props.post.postLikes}</span>
-          </div>
+        <div className={'icon-box'}>
+          <AiOutlineHeart />
+          <span>{props.post.postLikes}</span>
         </div>
-      </ItemBox>
+      </div>
+    </ItemBox>
   )
 }
 

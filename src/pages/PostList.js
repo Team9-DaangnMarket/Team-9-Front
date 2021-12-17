@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
-import PostItem from '../components/PostItem'
-import { axiosInstance } from '../shared/api'
-import { actionCreators as searchAction } from '../redux/modules/search'
-import { useDispatch } from 'react-redux'
+import { actionCreators as postActions } from '../redux/modules/post'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Grid, Button } from '../elements'
+import PostItem from '../components/PostItem'
 import { TiHome } from 'react-icons/ti'
 import { BiReceipt } from 'react-icons/bi'
 import { RiWechatLine } from 'react-icons/ri'
@@ -22,26 +22,23 @@ import {
 } from 'react-icons/hi'
 
 import Skeleton from '../components/skeleton/Skeleton'
-
-import { useHistory } from 'react-router-dom'
+import InfinityScroll from '../shared/InfinityScroll'
 
 const PostList = (props) => {
-  const history = useHistory()
   const dispatch = useDispatch()
-
+  const history = useHistory()
+  const post_data = useSelector((state) => state.post)
   const [listData, setListData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 
-  // 스켈레톤 로딩 테스트 코드
+  const getPostList = () => {
+    dispatch(postActions.getPostAction(post_data.page))
+  }
+  
   useEffect(() => {
     setIsLoading(true)
-    axiosInstance
-      .get('http://15.164.171.227/posts?page=0&size=20')
-      .then((res) => {
-        setListData(res.data)
-      })
-
     setTimeout(() => setIsLoading(false), 2000)
+    dispatch(postActions.getPostAction(0))
   }, [])
 
   return (
@@ -83,13 +80,22 @@ const PostList = (props) => {
           >
             <BsPlusLg />
           </Button>
-          {isLoading
-            ? listData.map((item, idx) => {
-                return <Skeleton version={'post-item'} key={`skel-id-${idx}`} />
-              })
-            : listData.map((item, idx) => {
-                return <PostItem post={item} key={`post-id-${idx}`} />
-              })}
+          <InfinityScroll
+            callNext={getPostList}
+            paging={{ next: post_data.has_next }}
+          >
+            {isLoading
+              ? post_data.posts.map((item, idx) => {
+                  return (
+                    <Skeleton version={'post-item'} key={`skel-id-${idx}`} />
+                  )
+                })
+              : post_data.posts.map((item, idx) => {
+                  return <PostItem post={item} key={`post-id-${idx}`} />
+                })}
+          </InfinityScroll>
+
+          {/* <SyncLoader></SyncLoader> */}
         </Grid>
       </PostListBx>
 
@@ -107,7 +113,11 @@ const PostList = (props) => {
           <button type='button' className='btns'>
             <RiWechatLine />
           </button>
-          <button type='button' className='btns' onClick={() => history.push('/likelist')}>
+          <button
+            type='button'
+            className='btns'
+            onClick={() => history.push('/likelist')}
+          >
             <AiOutlineHeart />
           </button>
         </Grid>
@@ -174,6 +184,7 @@ const PostListBx = styled.div`
     background: var(--point-color);
     color: #fff;
     font-size: 20px;
+    z-index: 9999;
   }
 `
 
