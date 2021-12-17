@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import PostItem from '../components/PostItem'
 import { axiosInstance } from '../shared/api'
+import { actionCreators as searchAction } from '../redux/modules/search'
+import { useDispatch } from 'react-redux'
 
 import { Grid, Button } from '../elements'
 import { TiHome } from 'react-icons/ti'
@@ -25,6 +27,7 @@ import { useHistory } from 'react-router-dom'
 
 const PostList = (props) => {
   const history = useHistory()
+  const dispatch = useDispatch()
 
   const [listData, setListData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
@@ -51,7 +54,10 @@ const PostList = (props) => {
               <MdOutlineKeyboardArrowDown className='arrow-down' />
             </h2>
             <Grid is_container _className='top-btns'>
-              <button>
+              <button onClick={() => {
+                history.push('/search')
+                dispatch(searchAction.setKeyword(null))
+              }}>
                 <HiOutlineSearch />
               </button>
 
