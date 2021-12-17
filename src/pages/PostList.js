@@ -1,61 +1,71 @@
-import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
-import styled from 'styled-components'
-import { actionCreators as postActions } from '../redux/modules/post'
-import { actionCreators as searchActions } from '../redux/modules/search'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import styled from "styled-components";
+import { actionCreators as postActions } from "../redux/modules/post";
+import { actionCreators as searchActions } from "../redux/modules/search";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Grid, Button } from '../elements'
-import PostItem from '../components/PostItem'
-import { TiHome } from 'react-icons/ti'
-import { BiReceipt } from 'react-icons/bi'
-import { RiWechatLine } from 'react-icons/ri'
-import { FiUser } from 'react-icons/fi'
-import { MdOutlineMenu } from 'react-icons/md'
-import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
-import { BsPlusLg } from 'react-icons/bs'
-import { AiOutlineHeart } from 'react-icons/ai'
-
+import { Grid, Button } from "../elements";
+import PostItem from "../components/PostItem";
+import { TiHome } from "react-icons/ti";
+import { BiReceipt, BiLogOut } from "react-icons/bi";
+import { MdOutlineMenu } from "react-icons/md";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { BsPlusLg } from "react-icons/bs";
+import { AiOutlineHeart, AiOutlineUser } from "react-icons/ai";
 import {
   HiOutlineLocationMarker,
   HiOutlineSearch,
   HiOutlineBell,
-} from 'react-icons/hi'
+} from "react-icons/hi";
 
-import Skeleton from '../components/skeleton/Skeleton'
-import InfinityScroll from '../shared/InfinityScroll'
+import Skeleton from "../components/skeleton/Skeleton";
+import InfinityScroll from "../shared/InfinityScroll";
+import { deleteCookie } from "../shared/Cookie";
 
 const PostList = (props) => {
-  const dispatch = useDispatch()
-  const history = useHistory()
-  const post_data = useSelector((state) => state.post)
-  const [listData, setListData] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const post_data = useSelector((state) => state.post);
+  const [listData, setListData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getPostList = () => {
-    dispatch(postActions.getPostAction(post_data.page))
-  }
-  
+    dispatch(postActions.getPostAction(post_data.page));
+  };
+
   useEffect(() => {
-    setIsLoading(true)
-    setTimeout(() => setIsLoading(false), 2000)
-    dispatch(postActions.getPostAction(0))
-  }, [])
+    setIsLoading(true);
+    setTimeout(() => setIsLoading(false), 2000);
+    dispatch(postActions.getPostAction(0));
+  }, []);
+
+  const logOut = () => {
+    const ok = window.confirm("로그아웃하시겠습니까?");
+    if (ok) {
+      deleteCookie("OK");
+      history.push("/login");
+    } else {
+      return null;
+    }
+  };
 
   return (
     <div>
       <MenuTop>
         <Grid is_container>
-          <div className='nav-top-bx'>
+          <div className="nav-top-bx">
             <h2>
-              동동동
-              <MdOutlineKeyboardArrowDown className='arrow-down' />
+              서초동
+              <MdOutlineKeyboardArrowDown className="arrow-down" />
             </h2>
-            <Grid is_container _className='top-btns'>
-              <button onClick={() => {
-                history.push('/search')
-                dispatch(searchActions.setKeyword(null))
-              }}>
+            <Grid is_container _className="top-btns">
+              <button
+                onClick={() => {
+                  history.push("/search");
+                  dispatch(searchActions.setKeyword(null));
+                }}
+              >
                 <HiOutlineSearch />
               </button>
 
@@ -72,11 +82,11 @@ const PostList = (props) => {
       </MenuTop>
 
       <PostListBx>
-        <Grid is_container _className='parent-position'>
+        <Grid is_container _className="parent-position">
           <Button
-            _className='plus-btn'
+            _className="plus-btn"
             _onClick={() => {
-              history.push('/write')
+              history.push("/write");
             }}
           >
             <BsPlusLg />
@@ -88,11 +98,11 @@ const PostList = (props) => {
             {isLoading
               ? post_data.posts.map((item, idx) => {
                   return (
-                    <Skeleton version={'post-item'} key={`skel-id-${idx}`} />
-                  )
+                    <Skeleton version={"post-item"} key={`skel-id-${idx}`} />
+                  );
                 })
               : post_data.posts.map((item, idx) => {
-                  return <PostItem post={item} key={`post-id-${idx}`} />
+                  return <PostItem post={item} key={`post-id-${idx}`} />;
                 })}
           </InfinityScroll>
 
@@ -101,31 +111,31 @@ const PostList = (props) => {
       </PostListBx>
 
       <MenuBottom>
-        <Grid _className='btn-bx' is_container>
-          <button type='button' className='btns'>
+        <Grid _className="btn-bx" is_container>
+          <button type="button" className="btns">
             <TiHome />
           </button>
-          <button type='button' className='btns'>
+          <button type="button" className="btns">
             <BiReceipt />
           </button>
-          <button type='button' className='btns'>
+          <button type="button" className="btns">
             <HiOutlineLocationMarker />
           </button>
-          <button type='button' className='btns'>
-            <RiWechatLine />
-          </button>
           <button
-            type='button'
-            className='btns'
-            onClick={() => history.push('/likelist')}
+            type="button"
+            className="btns"
+            onClick={() => history.push("/likelist")}
           >
             <AiOutlineHeart />
+          </button>
+          <button type="button" className="btns" onClick={logOut}>
+            <BiLogOut />
           </button>
         </Grid>
       </MenuBottom>
     </div>
-  )
-}
+  );
+};
 
 const MenuTop = styled.div`
   position: fixed;
@@ -168,7 +178,7 @@ const MenuTop = styled.div`
       cursor: pointer;
     }
   }
-`
+`;
 const PostListBx = styled.div`
   margin: 42px 0;
   .parent-position {
@@ -187,7 +197,7 @@ const PostListBx = styled.div`
     font-size: 20px;
     z-index: 9999;
   }
-`
+`;
 
 const MenuBottom = styled.div`
   position: fixed;
@@ -215,5 +225,5 @@ const MenuBottom = styled.div`
     border: none;
     background: none;
   }
-`
-export default PostList
+`;
+export default PostList;
