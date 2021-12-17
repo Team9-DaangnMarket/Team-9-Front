@@ -7,6 +7,7 @@ import PostList from "../pages/PostList";
 import PostWrite from "../pages/PostWrite";
 import PostDetail from "../pages/PostDetail";
 import LikeList from "../pages/LikeList";
+import SearchList from "../pages/SearchList";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/write" component={PostWrite} exact />
       <Route path="/write/:post_id" component={PostWrite} exact />
       <Route path="/likelist" component={LikeList} exact />
+      <Route path="/search" component={SearchList} exact />
     </>
   )
 }

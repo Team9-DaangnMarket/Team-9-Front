@@ -28,15 +28,13 @@ const PostList = (props) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const post_data = useSelector((state) => state.post)
-
   const [listData, setListData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 
   const getPostList = () => {
     dispatch(postActions.getPostAction(post_data.page))
   }
-
-  // 스켈레톤 로딩 테스트 코드
+  
   useEffect(() => {
     setIsLoading(true)
     setTimeout(() => setIsLoading(false), 2000)
@@ -53,7 +51,10 @@ const PostList = (props) => {
               <MdOutlineKeyboardArrowDown className='arrow-down' />
             </h2>
             <Grid is_container _className='top-btns'>
-              <button>
+              <button onClick={() => {
+                history.push('/search')
+                dispatch(searchAction.setKeyword(null))
+              }}>
                 <HiOutlineSearch />
               </button>
 
