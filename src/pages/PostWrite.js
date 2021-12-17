@@ -124,7 +124,7 @@ const PostWrite = (props) => {
                     })
                     .then((res) => {
                       console.log(res)
-                      history.replace('/')
+                      window.location.href = '/'
                     })
                     .catch((err) => console.log(err));
               });
