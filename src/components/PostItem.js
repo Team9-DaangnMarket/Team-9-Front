@@ -8,7 +8,6 @@ import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 import { IoChatbubblesOutline } from 'react-icons/io5'
 
 const PostItem = (props) => {
-  console.log(props)
   const location = useLocation()
   const { pathname } = location
   const [heart_on, setHeartOn] = useState(false)
@@ -29,10 +28,7 @@ const PostItem = (props) => {
     >
       <div className={'item-top'}>
         <div className={'item-img'} onClick={handleClickGoDetail}>
-          <img
-            src={props.post.goodsImg}
-            alt=''
-          />
+          <img src={props.post.goodsImg} alt='' />
         </div>
         <div className={'item-detail'} onClick={handleClickGoDetail}>
           <strong className={'subject'}>{props.post.title}</strong>

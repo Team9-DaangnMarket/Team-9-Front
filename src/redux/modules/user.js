@@ -1,7 +1,8 @@
 import { createAction, handleActions } from 'redux-actions'
 import { produce } from 'immer'
 
-import { getCookie, setCookie, deleteCookie } from '../../shared/Cookie'
+import { setCookie } from '../../shared/Cookie'
+
 // 액션
 const SET_USER = 'SET_USER'
 
