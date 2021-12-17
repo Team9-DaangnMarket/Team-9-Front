@@ -1,13 +1,14 @@
-import React, { useState, useRef } from "react";
-import { axiosInstance } from "../shared/api";
-import { storage } from "../shared/firebase";
-import { history } from "../redux/configureStore";
-import { checkName, checkId, checkPw } from "../shared/Check";
+import React, {useState, useRef} from "react";
+import {axiosInstance} from "../shared/api";
+import {storage} from "../shared/firebase";
+import {history} from "../redux/configureStore";
+import {checkName, checkId, checkPw} from "../shared/Check";
 import styled from "styled-components";
-import { Grid, Button } from "../elements/index";
-import { FaCamera } from "react-icons/fa";
+import {Grid, Button} from "../elements/index";
+import {FaCamera} from "react-icons/fa";
 
-const Signup = () => {
+const Signup = (props) => {
+  const {history} = props
   //nickname, id, pwd
   const [nickname, set_nickname] = useState("");
   const [id, set_id] = useState("");
@@ -29,30 +30,22 @@ const Signup = () => {
 
   // upload profile pic
   const fileInput = useRef();
-  const [preview, setPreview] = useState();
-  const [img_url, setImg_url] = useState();
+  const [preview, setPreview] = useState(null);
+  const [img_url, setImg_url] = useState(null);
 
   const selectFile = () => {
+    console.log('파일 체인지')
     const reader = new FileReader();
     const file = fileInput.current.files[0];
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       setPreview(reader.result);
-      console.log(reader.result);
+      console.log(preview);
     };
   };
 
   const handleUpload = (file) => {
-    const storageRef = storage.ref(file.name);
-    storage
-      .ref(`images/profileImg_${new Date().getTime()}`)
-      .putString(file, "data_url")
-      .then(function (snapshot) {
-        snapshot.ref.getDownloadURL().then((url) => {
-          console.log("스냅샷 URL", url);
-          setImg_url(url);
-        });
-      });
+
   };
 
   const handleClick = () => {
@@ -62,26 +55,60 @@ const Signup = () => {
   //아이디, 닉네임 중복확인 버튼
   //axios source
   const iddoubleChek = () => {
-    // axiosInstance
-    //   .post(`/user/checkId`, id)
-    //   .then((res) => console.log(res))
-    //   .catch((err) => {
-    //     console.log(err);
-    setErr_iddouble(true);
-    //   });
+    console.log('입력된 아이디', id)
+
+    const send_data = {
+      username: id
+    }
+
+    axiosInstance
+        .post(`/user/checkId`, send_data)
+        .then((res) => {
+          const {result} = res.data
+          console.log('아이디 중복 체크:', result)
+          if (result) {
+            setErr_iddouble(false);
+          } else {
+            setErr_iddouble(true);
+          }
+        })
+        .catch((err) => {
+          alert('[통신오류] 오류가 발생하였습니다. 관리자에게 문의하세요.')
+          console.log(err.response);
+        });
   };
   const namedoubleChek = () => {
-    // axiosInstance
-    //   .post(`/user/checkNickname`, nickname)
-    //   .then((res) => console.log(res))
-    //   .catch((err) => {
-    //     console.log(err);
-    setErr_namedouble(true);
-    //   });
+    console.log('입력된 닉네임', nickname)
+
+    const send_data = {
+      nickname: nickname
+    }
+
+    axiosInstance
+        .post(`/user/checkNickname`, send_data)
+        .then((res) => {
+          const {result} = res.data
+          console.log('중복 체크:', result)
+          if (result) {
+            setErr_namedouble(false);
+          } else {
+            setErr_namedouble(true);
+          }
+        })
+        .catch((err) => {
+          alert('[통신오류] 오류가 발생하였습니다. 관리자에게 문의하세요.')
+          console.log(err.response);
+        });
   };
 
   //회원가입 버튼
   const signupBtn = () => {
+    console.log('이미지', preview)
+    if (!preview) {
+      alert('프로필 사진을 첨부해주세요')
+      return
+    }
+
     if (nickname === "" || id === "" || pw === "" || pwCheck === "") {
       setDisBtn(false);
       return;
@@ -109,126 +136,137 @@ const Signup = () => {
       return;
     }
     //prifile img upload
-    handleUpload(preview);
-    //로그인 값 넘기는 것
-    axiosInstance
-      .post(`/user/signup`, {
-        username: id,
-        nickname: nickname,
-        password: pw,
-        profileImg: img_url,
-      })
-      .then((res) => {
-        console.log(res);
-        window.alert("가입을 축하드려요!");
-        window.location.hef = "/login";
-      })
-      .catch((err) => {
-        setErr_("사용할 수 없는 아이디 혹은 닉네임입니다");
-        console.log(`회원가입 오류 발생: ${err}`);
-      });
+    const storageRef = storage.ref(fileInput.current.files[0].name);
+    storage
+        .ref(`images/profileImg_${new Date().getTime()}`)
+        .putString(preview, "data_url")
+        .then(function (snapshot) {
+          snapshot.ref.getDownloadURL().then((url) => {
+            console.log("스냅샷 URL", url);
+            setImg_url(url);
 
-    history.push("/login");
+            //로그인 값 넘기는 것
+            axiosInstance
+                .post(`/user/signup`, {
+                  username: id,
+                  nickname: nickname,
+                  password: pw,
+                  profileImg: url,
+                })
+                .then((res) => {
+                  console.log(res);
+                  window.alert("가입을 축하드려요!");
+                  history.push("/login");
+                })
+                .catch((err) => {
+                  setErr_("사용할 수 없는 아이디 혹은 닉네임입니다");
+                  console.log(`회원가입 오류 발생: ${err}`);
+                });
+          });
+        });
+
+
+
   };
 
   return (
-    <>
-      <SignupForm>
-        <Grid is_container>
-          {/* logo  */}
-          <Logo>
-            <img src="assets/signup_logo.png" alt="logo" />
-          </Logo>
-          {/* img upload */}
-          <UploadBox>
-            <Circle>
-              <img
-                className="p_img"
-                src={
-                  preview
-                    ? preview
-                    : "https://i.pinimg.com/236x/a7/35/bc/a735bc244c696f41a450bc358a027f18--free-wooden-pallets--pallets.jpg"
-                }
-                alt="user_img"
-              />
-            </Circle>
-            <Btn>
-              <Button _onClick={handleClick} _className="uploadBtn">
-                <FaCamera />
-              </Button>
-              <input
-                type="file"
-                className="fileUpload"
-                accept="image/*"
-                ref={fileInput}
-                onChange={selectFile}
-              />
-            </Btn>
-          </UploadBox>
-          {/* signup Form */}
-          <InputForm>
-            <Grid
-              is_flex
-              _className="form-btn"
-              flex_align="center"
-              flex_justify="center"
-            >
-              <input
-                type="text"
-                placeholder="닉네임"
-                onChange={(e) => {
-                  set_nickname(e.target.value);
-                  setDouble_btn(false);
-                }}
-              />
-              <button onClick={namedoubleChek} disabled={double_btn}>
-                중복 확인
-              </button>
-            </Grid>
-            {err_nickname && <p>{err_nickname}</p>}
-            {err_namedouble && <p>중복된 닉네임입니다</p>}
-            <Grid
-              is_flex
-              _className="form-btn"
-              flex_align="center"
-              flex_justify="center"
-            >
-              <input
-                type="text"
-                placeholder="아이디"
-                onChange={(e) => {
-                  set_id(e.target.value);
-                  setDouble_btn(false);
-                }}
-              />
-              <button onClick={iddoubleChek} disabled={double_btn}>
-                중복 확인
-              </button>
-            </Grid>
-            {err_id && <p>{err_id}</p>}
-            {err_iddouble && <p>중복된 아이디입니다</p>}
+      <>
+        <SignupForm>
+          <Grid is_container>
+            {/* logo  */}
+            <Logo>
+              <img src="assets/signup_logo.png" alt="logo"/>
+            </Logo>
+            {/* img upload */}
+            <UploadBox>
+              <Circle>
+                <img
+                    className="p_img"
+                    src={
+                      preview
+                          ? preview
+                          : "https://i.pinimg.com/236x/a7/35/bc/a735bc244c696f41a450bc358a027f18--free-wooden-pallets--pallets.jpg"
+                    }
+                    alt="user_img"
+                />
+              </Circle>
+              <Btn>
+                <Button _onClick={handleClick} _className="uploadBtn">
+                  <FaCamera/>
+                </Button>
+                <input
+                    type="file"
+                    className="fileUpload"
+                    accept="image/*"
+                    ref={fileInput}
+                    onChange={selectFile}
+                />
+              </Btn>
+            </UploadBox>
+            {/* signup Form */}
+            <InputForm>
+              <Grid
+                  is_flex
+                  _className="form-btn"
+                  flex_align="center"
+                  flex_justify="center"
+              >
+                <input
+                    type="text"
+                    placeholder="닉네임"
+                    onChange={(e) => {
+                      set_nickname(e.target.value);
+                      setDouble_btn(false);
+                    }}
+                />
+                <button onClick={namedoubleChek} disabled={double_btn}>
+                  중복 확인
+                </button>
+              </Grid>
+              {err_nickname && <p>{err_nickname}</p>}
+              {err_namedouble && <p>중복된 닉네임입니다</p>}
+              <Grid
+                  is_flex
+                  _className="form-btn"
+                  flex_align="center"
+                  flex_justify="center"
+              >
+                <input
+                    type="text"
+                    placeholder="아이디"
+                    onChange={(e) => {
+                      set_id(e.target.value);
+                      setDouble_btn(false);
+                    }}
+                />
+                <button onClick={iddoubleChek} disabled={double_btn}>
+                  중복 확인
+                </button>
+              </Grid>
+              {err_id && <p>{err_id}</p>}
+              {err_iddouble && <p>중복된 아이디입니다</p>}
 
-            <input
-              type="password"
-              placeholder="비밀번호"
-              onChange={(e) => set_pw(e.target.value)}
-            />
-            {err_pw && <p>{err_pw}</p>}
+              <input
+                  type="password"
+                  placeholder="비밀번호"
+                  onChange={(e) => set_pw(e.target.value)}
+              />
+              {err_pw && <p>{err_pw}</p>}
 
-            <input
-              type="password"
-              placeholder="비밀번호 확인"
-              onChange={(e) => set_pwCheck(e.target.value)}
-            />
-            {err_pwCheck && <p>{err_pwCheck}</p>}
-            {err_ && <p>{err_}</p>}
-          </InputForm>
-          <Button version={"orange"} _onClick={signupBtn} disabled={disBtn}>
-            등록하기
-          </Button>
-        </Grid>
-      </SignupForm>
-    </>
+              <input
+                  type="password"
+                  placeholder="비밀번호 확인"
+                  onChange={(e) => set_pwCheck(e.target.value)}
+              />
+              {err_pwCheck && <p>{err_pwCheck}</p>}
+              {err_ && <p>{err_}</p>}
+            </InputForm>
+            <Button version={"orange"} _onClick={signupBtn} >
+              등록하기
+            </Button>
+          </Grid>
+        </SignupForm>
+      </>
   );
 };
 
