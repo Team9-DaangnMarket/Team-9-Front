@@ -3,32 +3,43 @@ import styled from 'styled-components'
 import { comma } from '../shared/util'
 import { useLocation } from 'react-router-dom'
 import { history } from '../redux/configureStore'
+import { axiosInstance } from '../shared/api'
 
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 import { IoChatbubblesOutline } from 'react-icons/io5'
 
+const NO_IMG = 'https://www.i-shop.link/home/assets/images/no-image.png'
+
 const PostItem = (props) => {
   const location = useLocation()
   const { pathname } = location
-  const [heart_on, setHeartOn] = useState(false)
+  const [heart_on, setHeartOn] = useState(props.post.likeCheck)
 
-  const handleClickHeart = () => {
+  const handleClickHeart = async () => {
+    try {
+      const res = await axiosInstance.post(`/postLike/${props.post.postId}`)
+      console.log('찜하기 API 결과', res)
+      window.location.reload()
+    } catch (err) {
+      alert('알수없는 이유로 기능을 사용할 수 없습니다 :(')
+    }
+
     setHeartOn(!heart_on)
   }
 
   const handleClickGoDetail = () => {
-    history.push('detail')
+    history.push(`/detail/${props.post.postId}`)
   }
 
   return (
-    <ItemBox
-      onClick={() => {
-        history.push(`/detail/${props.post.postId}`)
-      }}
-    >
+    <ItemBox>
       <div className={'item-top'}>
         <div className={'item-img'} onClick={handleClickGoDetail}>
-          <img src={props.post.goodsImg} alt='' />
+          <img
+            src={props.post.goodsImg}
+            alt=''
+            onError={(e) => (e.target.src = NO_IMG)}
+          />
         </div>
         <div className={'item-detail'} onClick={handleClickGoDetail}>
           <strong className={'subject'}>{props.post.title}</strong>

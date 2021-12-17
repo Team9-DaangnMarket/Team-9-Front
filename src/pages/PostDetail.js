@@ -3,6 +3,7 @@ import {useParams} from 'react-router-dom'
 import styled from 'styled-components';
 import {comma, getScrollHeight, copyUrlToClip} from '../shared/util'
 import {axiosInstance} from '../shared/api'
+import { getCookie } from '../shared/Cookie'
 
 import {Grid, Button} from '../elements';
 import {BiArrowBack, BiHomeAlt, BiDotsVerticalRounded} from 'react-icons/bi';
@@ -10,8 +11,11 @@ import {BsShare} from 'react-icons/bs';
 import {AiFillHeart} from 'react-icons/ai';
 import OtherPost from '../components/OtherPost';
 
+const NO_IMG = 'https://www.i-shop.link/home/assets/images/no-image.png'
+
 const PostDetail = ({history}) => {
   console.log('[PostDetail]')
+  const is_login = getCookie('id')
   const params = useParams()
   const topBarRef = useRef(null)
   const [heart, setHeart] = useState(true)
@@ -55,10 +59,9 @@ const PostDetail = ({history}) => {
     }
   }
 
-  // TODO: 찜 기능 API 연동
-  const handleClickLikeBtn = async () => {
+  const handleClickLikeBtn = async (post_id) => {
     try {
-      const res = await axiosInstance.post('/postLike/35')
+      const res = await axiosInstance.post(`/postLike/${post_id}`)
       console.log('찜하기 API 결과', res)
     } catch (err) {
       alert('알수없는 이유로 기능을 사용할 수 없습니다 :(')
@@ -201,7 +204,7 @@ const PostDetail = ({history}) => {
               </button>
 
               {
-                true // 로그인 아이디와 작성자가 같을 경우
+                  is_login === detail_data.username // 로그인 아이디와 작성자가 같을 경우
                   && (
                       <button type={'button'} className={'more-btn'} onClick={handleOpenOtpModal}>
                         <BiDotsVerticalRounded className={'more-icon'}/>
@@ -229,6 +232,7 @@ const PostDetail = ({history}) => {
                 <img
                     src={detail_data.goodsImg}
                     alt={''}
+                    onError={(e) => e.target.src = NO_IMG}
                 />
               </div>
             </div>
@@ -263,7 +267,7 @@ const PostDetail = ({history}) => {
           <Grid is_container padding={'16px'}>
             <div className={'cont-title'}>
               <h2 className={'subject'}>{detail_data.title}</h2>
-              <span className={'category'}>{detail_data.category}</span>
+              <span className={'category'}>{detail_data.categoryName}</span>
               <span className={'datetime'}>{detail_data.createdAt}</span>
             </div>
             <div className={'cont-desc'}>{detail_data.content}</div>
@@ -286,7 +290,7 @@ const PostDetail = ({history}) => {
               _className={'ctrl-inner'}
               padding={'16px'}
           >
-            <button type={'button'} className={`like-btn ${heart ? 'on' : ''}`} onClick={handleClickLikeBtn}>
+            <button type={'button'} className={`like-btn ${heart ? 'on' : ''}`} onClick={() => handleClickLikeBtn(detail_data.postId)}>
               <AiFillHeart/>
             </button>
 

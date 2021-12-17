@@ -13,6 +13,8 @@ import { FiUser } from 'react-icons/fi'
 import { MdOutlineMenu } from 'react-icons/md'
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
 import { BsPlusLg } from 'react-icons/bs'
+import { AiOutlineHeart } from 'react-icons/ai'
+
 import {
   HiOutlineLocationMarker,
   HiOutlineSearch,
@@ -110,8 +112,12 @@ const PostList = (props) => {
           <button type='button' className='btns'>
             <RiWechatLine />
           </button>
-          <button type='button' className='btns'>
-            <FiUser />
+          <button
+            type='button'
+            className='btns'
+            onClick={() => history.push('/likelist')}
+          >
+            <AiOutlineHeart />
           </button>
         </Grid>
       </MenuBottom>
@@ -197,6 +203,7 @@ const MenuBottom = styled.div`
     padding-bottom: 10px;
   }
   .btns {
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
