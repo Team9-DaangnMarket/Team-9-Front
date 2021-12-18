@@ -134,7 +134,6 @@ const PostWrite = (props) => {
           .putString(preview, "data_url")
           .then(function (snapshot) {
             snapshot.ref.getDownloadURL().then((url) => {
-              console.log("스냅샷 URL", url);
               //axios
               axiosInstance
                 .put(`/posts/${post_id}`, {
