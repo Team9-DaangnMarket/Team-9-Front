@@ -95,7 +95,7 @@
 </br>
 
 
-<code>정민경</code> - 회원가입 페이지, 게시글 작성-수정(모달창 포함)
+<code>정민경</code> 회원가입 페이지, 게시글 작성-수정(모달창 포함)
 
 <code>Trouble Shooting</code>  [트러블 슈팅 해결과정]("https://exuberant-dart-a7f.notion.site/0e96630aa4604f8ba979067733964100")
 
