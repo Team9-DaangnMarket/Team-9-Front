@@ -597,6 +597,7 @@ const DetailWrap = styled.section`
         border-radius: 50%;
         overflow: hidden;
         margin-right: 10px;
+        object-fit: cover;
       }
 
       .user-info {
