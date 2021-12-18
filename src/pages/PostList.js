@@ -2,19 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { actionCreators as postActions } from '../redux/modules/post'
+import { actionCreators as searchActions } from '../redux/modules/search'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Grid, Button } from '../elements'
 import PostItem from '../components/PostItem'
 import { TiHome } from 'react-icons/ti'
-import { BiReceipt } from 'react-icons/bi'
-import { RiWechatLine } from 'react-icons/ri'
-import { FiUser } from 'react-icons/fi'
+import { BiReceipt, BiLogOut } from 'react-icons/bi'
 import { MdOutlineMenu } from 'react-icons/md'
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
 import { BsPlusLg } from 'react-icons/bs'
-import { AiOutlineHeart } from 'react-icons/ai'
-
+import { AiOutlineHeart, AiOutlineUser } from 'react-icons/ai'
 import {
   HiOutlineLocationMarker,
   HiOutlineSearch,
@@ -23,6 +21,7 @@ import {
 
 import Skeleton from '../components/skeleton/Skeleton'
 import InfinityScroll from '../shared/InfinityScroll'
+import { deleteCookie } from '../shared/Cookie'
 
 const PostList = (props) => {
   const dispatch = useDispatch()
@@ -41,13 +40,23 @@ const PostList = (props) => {
     dispatch(postActions.getPostAction(0))
   }, [])
 
+  const logOut = () => {
+    const ok = window.confirm('로그아웃하시겠습니까?')
+    if (ok) {
+      deleteCookie('OK')
+      history.push('/login')
+    } else {
+      return null
+    }
+  }
+
   return (
     <div>
       <MenuTop>
         <Grid is_container>
           <div className='nav-top-bx'>
             <h2>
-              동동동
+              서초동
               <MdOutlineKeyboardArrowDown className='arrow-down' />
             </h2>
             <Grid is_container _className='top-btns'>
@@ -112,15 +121,15 @@ const PostList = (props) => {
           <button type='button' className='btns'>
             <HiOutlineLocationMarker />
           </button>
-          <button type='button' className='btns'>
-            <RiWechatLine />
-          </button>
           <button
             type='button'
             className='btns'
             onClick={() => history.push('/likelist')}
           >
             <AiOutlineHeart />
+          </button>
+          <button type='button' className='btns' onClick={logOut}>
+            <BiLogOut />
           </button>
         </Grid>
       </MenuBottom>

@@ -22,6 +22,7 @@ const PostDetail = ({ history }) => {
   const [opt_modal_open, setOptModal] = useState(false)
   const [detail_data, setDetailData] = useState(null)
   const [alt_data, setAltData] = useState(null)
+  const [cnt_value, setCntValue] = useState({ like: 0, visit: 0 })
 
   // 디테일 상단바 색상 세팅 함수
   const handleHeaderPaint = () => {
@@ -66,7 +67,19 @@ const PostDetail = ({ history }) => {
       alert('알수없는 이유로 기능을 사용할 수 없습니다 :(')
     }
 
-    setHeart(!heart)
+    if (heart) {
+      setHeart(false)
+      setCntValue({
+        ...cnt_value,
+        like: cnt_value.like - 1,
+      })
+    } else {
+      setHeart(true)
+      setCntValue({
+        ...cnt_value,
+        like: cnt_value.like + 1,
+      })
+    }
   }
 
   const handleClickCopyUrl = () => {
@@ -122,6 +135,10 @@ const PostDetail = ({ history }) => {
       const isLiked = res.data.likeCheck
       console.log('찜 상태', isLiked)
       setHeart(isLiked)
+      setCntValue({
+        like: res.data.postLike,
+        visit: res.data.visitCount,
+      })
       console.log('상세 데이터 조회 성공', res)
     } catch (err) {
       setDetailData(null)

@@ -1,20 +1,19 @@
-import React, {useState, useRef, useEffect} from "react";
-import {axiosInstance} from "../shared/api";
-import {useParams} from "react-router-dom";
-import {getCookie} from '../shared/Cookie'
+import React, { useState, useRef, useEffect } from "react";
+import { axiosInstance } from "../shared/api";
+import { useParams } from "react-router-dom";
+import { getCookie } from "../shared/Cookie";
 
-import {Grid, Button, Input} from "../elements";
-import {storage} from "../shared/firebase";
-import {dummyCate} from "../shared/util";
+import { Grid, Button, Input } from "../elements";
+import { storage } from "../shared/firebase";
+import { dummyCate } from "../shared/util";
 import styled from "styled-components";
-import {GoSettings} from "react-icons/go";
-import {MdOutlinePostAdd, MdOutlineClose} from "react-icons/md";
-import {BiArrowBack} from "react-icons/bi";
-import {FaChevronRight, FaCamera} from "react-icons/fa";
+import { GoSettings } from "react-icons/go";
+import { MdOutlinePostAdd, MdOutlineClose } from "react-icons/md";
+import { BiArrowBack } from "react-icons/bi";
+import { FaChevronRight, FaCamera } from "react-icons/fa";
 
 const PostWrite = (props) => {
-  const {history} = props
-  const {post_id} = useParams();
+  const { post_id } = useParams();
   const [_post, set_Post] = useState("");
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState(0);
@@ -22,7 +21,7 @@ const PostWrite = (props) => {
   const [content, setContent] = useState("");
   const [preview, setPreview] = useState("");
   const [img_url, setImg_url] = useState();
-  const cbRef = useRef(null)
+  const cbRef = useRef(null);
 
   //modal open
   const [isOpen, setIsOpen] = useState(false);
@@ -35,31 +34,30 @@ const PostWrite = (props) => {
           .then((res) => {
             set_Post(res.data);
             setCate(res.data.categoryName);
-            setImg_url(res.data.goodsImg)
-            setPreview(res.data.goodsImg)
-            setPrice(res.data.price)
-            setTitle(res.data.title)
-            setContent(res.data.content)
+            setImg_url(res.data.goodsImg);
+            setPreview(res.data.goodsImg);
+            setPrice(res.data.price);
+            setTitle(res.data.title);
+            setContent(res.data.content);
           })
           .catch((err) => {
             console.log(err);
           });
     }
-
   }, []);
 
   useEffect(() => {
     if (price) {
-      cbRef.current.checked = true
-      cbRef.current.disabled = false
+      cbRef.current.checked = true;
+      cbRef.current.disabled = false;
     } else {
-      cbRef.current.checked = false
-      cbRef.current.disabled = true
+      cbRef.current.checked = false;
+      cbRef.current.disabled = true;
     }
-  }, [price])
+  }, [price]);
 
-  //이미지 파일명 생성을 위한 가짜 유저아이디
-  const user_id = getCookie('id');
+  //이미지 파일명 생성을 위한 유저아이디
+  const user_id = getCookie("id");
 
   //upload file
   const fileInput = useRef();
@@ -93,18 +91,45 @@ const PostWrite = (props) => {
   //포스트 업로드
   const addPost = () => {
     if (!preview) {
-      alert('사진을 업로드 해주세요')
-      return
+      alert("사진을 업로드 해주세요");
+      return;
     }
 
-    console.log(title, content, price, cate)
-      if (!title || !content || !price || !cate === "카테고리") {
+    console.log(title, content, price, cate);
+    if (!title || !content || !price || !cate === "카테고리") {
       window.alert("빈 공간을 채워주세요!");
       return;
     }
 
-      // 새로운 게시물 작성 일때와 수정 일때 로직 분기
-      if (!post_id) {
+    // 새로운 게시물 작성 일때와 수정 일때 로직 분기
+    if (!post_id) {
+      const storageRef = storage.ref(fileInput.current.files[0].name);
+      storage
+          .ref(`images/${user_id}_${new Date().getTime()}`)
+          .putString(preview, "data_url")
+          .then(function (snapshot) {
+            snapshot.ref.getDownloadURL().then((url) => {
+              console.log("스냅샷 URL", url);
+              //axios
+              axiosInstance
+                  .post("/posts", {
+                    title: title,
+                    content: content,
+                    price: price,
+                    goodsImg: url,
+                    negoCheck: true,
+                    categoryName: cate,
+                  })
+                  .then((res) => {
+                    console.log(res);
+                    window.location.href = "/";
+                  })
+                  .catch((err) => console.log(err));
+            });
+          });
+    } else {
+      const file = fileInput.current.files[0];
+      if (file) {
         const storageRef = storage.ref(fileInput.current.files[0].name);
         storage
             .ref(`images/${user_id}_${new Date().getTime()}`)
@@ -114,7 +139,7 @@ const PostWrite = (props) => {
                 console.log("스냅샷 URL", url);
                 //axios
                 axiosInstance
-                    .post("/posts", {
+                    .put(`/posts/${post_id}`, {
                       title: title,
                       content: content,
                       price: price,
@@ -123,15 +148,15 @@ const PostWrite = (props) => {
                       categoryName: cate,
                     })
                     .then((res) => {
-                      console.log(res)
-                      history.replace('/')
+                      console.log(res);
+                      window.location.href = "/";
                     })
                     .catch((err) => console.log(err));
               });
             });
       } else {
         axiosInstance
-            .post("/posts", {
+            .put(`/posts/${post_id}`, {
               title: title,
               content: content,
               price: price,
@@ -140,12 +165,12 @@ const PostWrite = (props) => {
               categoryName: cate,
             })
             .then((res) => {
-              console.log(res)
-              history.replace('/')
+              console.log(res);
+              window.location.href = "/";
             })
             .catch((err) => console.log(err));
       }
-
+    }
   };
 
   return (
@@ -160,7 +185,10 @@ const PostWrite = (props) => {
                   _className="title-inner"
               >
                 <p>
-                  <BiArrowBack onClick={() => history.replace('/')} style={{cursor: 'pointer'}}/>
+                  <BiArrowBack
+                      onClick={() => (window.location.href = "/")}
+                      style={{ cursor: "pointer" }}
+                  />
                 </p>
                 <h3>중고거래 글쓰기</h3>
                 {post_id ? (
@@ -176,7 +204,7 @@ const PostWrite = (props) => {
             </Grid>
             <UploadBox>
               <UploadBtn onClick={handleClick}>
-                <FaCamera/>
+                <FaCamera />
                 <input
                     type="file"
                     className="fileUpload"
@@ -187,12 +215,14 @@ const PostWrite = (props) => {
               {preview ? (
                   <>
                     <UploadImg>
-                      <img src={preview} alt="pre_img"/>
-                      <button onClick={() => {
-                        setPreview("")
-                        fileInput.current.value = null
-                      }}>
-                        <MdOutlineClose/>
+                      <img src={preview} alt="pre_img" />
+                      <button
+                          onClick={() => {
+                            setPreview("");
+                            fileInput.current.value = null;
+                          }}
+                      >
+                        <MdOutlineClose />
                       </button>
                     </UploadImg>
                   </>
@@ -210,7 +240,7 @@ const PostWrite = (props) => {
               <div className="cate" onClick={openModal}>
                 {cate}
                 <span>
-                <FaChevronRight/>
+                <FaChevronRight />
               </span>
               </div>
               {isOpen && (
@@ -220,7 +250,8 @@ const PostWrite = (props) => {
                       <ul>
                         {dummyCate.map((c, i) => {
                           return (
-                              <li key={`cate-id-${i}`}
+                              <li
+                                  key={`cate-id-${i}`}
                                   onClick={() => {
                                     setIsOpen(false);
                                     setCate(`${c}`);
@@ -239,7 +270,7 @@ const PostWrite = (props) => {
               <Grid is_flex _className="price-box">
                 <Cur cur={price}>\</Cur>
                 <Input
-                    type={'number'}
+                    type={"number"}
                     placeholder="가격 (선택사항)"
                     _className="price"
                     _onChange={priceOnChange}
@@ -250,12 +281,7 @@ const PostWrite = (props) => {
               <Grid _className="price-checkbox">
                 <label className="control control--checkbox">
                   가격 제안받기
-                  <input
-                      type="checkbox"
-                      ref={cbRef}
-                      // checked={price ? "checked" : null}
-                      // disabled={price ? false : true}
-                  />
+                  <input type="checkbox" ref={cbRef} />
                   <div className="control__indicator"></div>
                 </label>
               </Grid>
@@ -279,11 +305,11 @@ const PostWrite = (props) => {
                   padding="16px"
               >
               <span>
-                <MdOutlinePostAdd/>
+                <MdOutlinePostAdd />
               </span>
                 <h5>자주 쓰는 문구</h5>
                 <span>
-                <GoSettings/>
+                <GoSettings />
               </span>
                 <h5>보여줄 동네 설정</h5>
               </Grid>
@@ -522,7 +548,7 @@ const Modal = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     width: 400px;
-    z-index: 10;
+    z-index: 99999;
     background-color: #fff;
     border-radius: 6px;
     border: 1px solid var(--border-color);
