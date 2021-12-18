@@ -5,7 +5,6 @@ import SyncLoader from 'react-spinners/SyncLoader'
 
 const InfinityScroll = (props) => {
   const { children, callNext, paging } = props
-
   const spinnerRef = useRef(null)
   const handleObserver = new IntersectionObserver(([{ isIntersecting }]) => {
     if (isIntersecting) {
@@ -29,7 +28,7 @@ const InfinityScroll = (props) => {
       {children}
       {paging.next && (
         <Spinner ref={spinnerRef}>
-          <SyncLoader color='rgba(255, 255, 255, 0.6)' size={15} margin={8} />
+          <SyncLoader color='var(--point-color)' size={15} margin={10} />
         </Spinner>
       )}
     </React.Fragment>

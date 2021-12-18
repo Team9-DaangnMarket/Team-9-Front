@@ -34,7 +34,7 @@ const PostList = (props) => {
   const getPostList = () => {
     dispatch(postActions.getPostAction(post_data.page))
   }
-  
+
   useEffect(() => {
     setIsLoading(true)
     setTimeout(() => setIsLoading(false), 2000)
@@ -51,10 +51,12 @@ const PostList = (props) => {
               <MdOutlineKeyboardArrowDown className='arrow-down' />
             </h2>
             <Grid is_container _className='top-btns'>
-              <button onClick={() => {
-                history.push('/search')
-                dispatch(searchAction.setKeyword(null))
-              }}>
+              <button
+                onClick={() => {
+                  history.push('/search')
+                  dispatch(searchAction.setKeyword(null))
+                }}
+              >
                 <HiOutlineSearch />
               </button>
 
@@ -169,7 +171,7 @@ const MenuTop = styled.div`
   }
 `
 const PostListBx = styled.div`
-  margin: 42px 0;
+  margin: 42px 0 80px;
   .parent-position {
     position: relative;
   }
