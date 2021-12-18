@@ -39,9 +39,16 @@ const Login = () => {
         );
       })
       .catch((err) => {
-        console.log(`로그인 오류 발생: ${err}`);
+        alert('로그인 정보가 맞지않습니다. 다시 시도해주세요.')
+        console.log(`로그인 오류 발생: ${err.response}`);
       });
   };
+
+  const handleKeyUpEnter = (e) => {
+    if (e.key === 'Enter') {
+      handleClickLogin()
+    }
+  }
 
   useEffect(() => {
     if (input_values.user_id !== "" && input_values.user_pw !== "") {
@@ -52,6 +59,14 @@ const Login = () => {
 
     return () => {};
   }, [input_values]);
+
+  useEffect(() => {
+    window.addEventListener('keyup', handleKeyUpEnter)
+
+    return () => {
+      window.removeEventListener('keyup', handleKeyUpEnter)
+    }
+  })
 
   return (
     <Grid is_container>
