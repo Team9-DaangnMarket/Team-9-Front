@@ -14,7 +14,7 @@ const LikeList = (props) => {
     try {
       const res = await axiosInstance.get("/postLike");
       setLikeList(res.data);
-      console.log("찜 목록 불러오기 성공", res.data);
+      // console.log("찜 목록 불러오기 성공", res.data);
     } catch (err) {
       console.log("찜 목록 불러오기 실패", err);
     }

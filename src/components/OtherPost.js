@@ -8,7 +8,6 @@ import {Grid, Button} from '../elements';
 const NO_IMG = 'https://www.i-shop.link/home/assets/images/no-image.png'
 
 const OtherPost = ({other_list, title_show}) => {
-  console.log('[OtherProduct]')
 
   if (!other_list) {
     return null
@@ -16,6 +15,7 @@ const OtherPost = ({other_list, title_show}) => {
 
   const handleClickDetailLink = (post_id) => {
     history.push(`/detail/${post_id}`)
+    window.scrollTo(0, 0)
   }
 
   return (

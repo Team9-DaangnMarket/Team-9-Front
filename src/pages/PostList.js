@@ -53,7 +53,7 @@ const PostList = (props) => {
   return (
     <div>
       <MenuTop>
-        <Grid is_container>
+        <Grid is_container padding={'0 16px'}>
           <div className='nav-top-bx'>
             <h2>
               서초동
@@ -82,7 +82,7 @@ const PostList = (props) => {
       </MenuTop>
 
       <PostListBx>
-        <Grid is_container _className='parent-position'>
+        <Grid is_container _className='parent-position' padding={'0 16px'}>
           <Button
             _className='plus-btn'
             _onClick={() => {
@@ -196,6 +196,11 @@ const PostListBx = styled.div`
     color: #fff;
     font-size: 20px;
     z-index: 9999;
+
+    @media screen and (max-width: 425px) {
+      bottom: 60px;
+      right: 16px;
+    }
   }
 `
 
