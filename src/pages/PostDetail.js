@@ -292,9 +292,7 @@ const PostDetail = ({history}) => {
               <div className={"user-profile"}>
                 <img
                     className={"user-img"}
-                    src={
-                      "https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-7e50c459a71e0e88c474406a45bbbdce8a3bf2ed4f2efcae59a064e39ea9ff30.png"
-                    }
+                    src={detail_data.profileImg}
                     alt={""}
                 />
                 <div className={"user-info"}>
