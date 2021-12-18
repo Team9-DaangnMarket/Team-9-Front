@@ -97,7 +97,7 @@
 
 <code>정민경</code> 
 
-<code>Trouble Shooting</code>  [트러블 슈팅 해결과정]("프론트분들 주소넣기")
+<code>Trouble Shooting</code>  [트러블 슈팅 해결과정]("https://exuberant-dart-a7f.notion.site/0e96630aa4604f8ba979067733964100")
 
 </br>
 
