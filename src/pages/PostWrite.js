@@ -548,7 +548,7 @@ const Modal = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     width: 400px;
-    z-index: 10;
+    z-index: 99999;
     background-color: #fff;
     border-radius: 6px;
     border: 1px solid var(--border-color);
