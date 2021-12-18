@@ -95,7 +95,6 @@ const PostWrite = (props) => {
       return;
     }
 
-    console.log(title, content, price, cate);
     if (!title || !content || !price || !cate === "카테고리") {
       window.alert("빈 공간을 채워주세요!");
       return;
@@ -109,7 +108,6 @@ const PostWrite = (props) => {
           .putString(preview, "data_url")
           .then(function (snapshot) {
             snapshot.ref.getDownloadURL().then((url) => {
-              console.log("스냅샷 URL", url);
               //axios
               axiosInstance
                   .post("/posts", {
@@ -221,6 +219,7 @@ const PostWrite = (props) => {
                             setPreview("");
                             fileInput.current.value = null;
                           }}
+
                       >
                         <MdOutlineClose />
                       </button>
@@ -255,20 +254,21 @@ const PostWrite = (props) => {
                                   onClick={() => {
                                     setIsOpen(false);
                                     setCate(`${c}`);
-                                  }}
-                              >
-                                {c}
-                              </li>
-                          );
-                        })}
-                      </ul>
-                    </Modal>
-                  </>
-              )}
-            </SelectBox>
-            <Grid is_flex>
-              <Grid is_flex _className="price-box">
-                <Cur cur={price}>\</Cur>
+                                  }}                               
+                >
+                          {c}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </Modal>
+              </>
+            )}
+          </SelectBox>
+          <Grid is_flex _className="price-total-box">
+            <Grid is_flex _className="price-box">
+              <Cur cur={price}>\</Cur>
+       
                 <Input
                     type={"number"}
                     placeholder="가격 (선택사항)"
@@ -331,12 +331,13 @@ const WriteBox = styled.div`
     left: 0;
     z-index: 100;
     width: 100%;
-
+    background-color: #fff;
     border-bottom: 1px solid var(--border-color);
 
     .title-inner {
       max-width: 425px;
       margin: 0 auto;
+      padding: 0 8px;
     }
 
     p {
@@ -345,9 +346,7 @@ const WriteBox = styled.div`
   }
 
   input {
-    border: 1px solid var(--border-color);
-    border-right: 0;
-    border-left: 0;
+    border: 0;
     padding: 10px 5px;
     height: 60px;
     outline: 0;
@@ -366,10 +365,12 @@ const WriteBox = styled.div`
   }
 
   /* 가격 */
-
-  .price-box {
-    .price {
-      width: 270px;
+  .price-total-box {
+    border-bottom: 1px solid var(--border-color);
+    .price-box {
+      .price {
+        width: 80%;
+      }
     }
   }
 
@@ -455,8 +456,10 @@ const Cur = styled.div`
 
 // 상품 사진 업로드
 const UploadBox = styled.div`
-  margin: 60px 0 30px 0;
+  margin: 60px 0 0 0;
   display: flex;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 30px;
 
   .fileUpload {
     display: none;
@@ -522,6 +525,8 @@ const UploadImg = styled.div`
 
 //select 카테고리
 const SelectBox = styled.div`
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   .cate {
     padding: 15px 0;
     font-size: 15px;
@@ -539,7 +544,7 @@ const Modal = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 9;
+    z-index: 120;
   }
 
   ul {
@@ -547,12 +552,27 @@ const Modal = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 400px;
+    width: 325px;
     z-index: 99999;
     background-color: #fff;
     border-radius: 6px;
     border: 1px solid var(--border-color);
     font-size: 15px;
+
+    @media screen and (max-width: 320px) {
+      width: 100%;
+      height: 100vh;
+      position: fixed;
+      top: 0%;
+      left: 50%;
+      transform: translate(-50%, 0%);
+      border-radius: 0px;
+      li {
+        padding: 5px 0px 5px 10px;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 12.5px;
+      }
+    }
 
     li {
       padding: 10px 0px 10px 10px;
@@ -581,7 +601,7 @@ const SettingCtrl = styled.div`
     }
 
     h5 {
-      margin-right: 30px;
+      margin-right: 25px;
       line-height: 40px;
     }
   }
