@@ -88,6 +88,7 @@
 ## ✌🏻 개인 역할 및 트러블 슈팅 해결과정
 
 <code>이서현</code> 
+ㅇㅇㅇㅇㅇㅇ
 </br>
 
 
@@ -97,7 +98,7 @@
 
 <code>정민경</code> 회원가입 페이지, 게시글 작성-수정(모달창 포함) 뷰와 기능 구현, 로그아웃 구현
 
-<code>Trouble Shooting</code>  [트러블 슈팅 해결과정]("https://exuberant-dart-a7f.notion.site/0e96630aa4604f8ba979067733964100")
+<code>Trouble Shooting</code>  [트러블 슈팅 해결과정](https://exuberant-dart-a7f.notion.site/007d3785d2d645a28853523fe295256c)
 
 </br>
 
