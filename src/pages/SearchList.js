@@ -32,7 +32,6 @@ const SearchList = (props) => {
   };
 
   const updateSearchState = async (keyword) => {
-    console.log(keyword, "를 검색합니다.");
     const result = await fetchSearchData(keyword);
     setSearchData(result);
     dispatch(searchAction.setKeyword(keyword));

@@ -95,7 +95,6 @@ const PostWrite = (props) => {
       return;
     }
 
-    console.log(title, content, price, cate);
     if (!title || !content || !price || !cate === "카테고리") {
       window.alert("빈 공간을 채워주세요!");
       return;
@@ -109,7 +108,6 @@ const PostWrite = (props) => {
           .putString(preview, "data_url")
           .then(function (snapshot) {
             snapshot.ref.getDownloadURL().then((url) => {
-              console.log("스냅샷 URL", url);
               //axios
               axiosInstance
                   .post("/posts", {
@@ -121,7 +119,7 @@ const PostWrite = (props) => {
                     categoryName: cate,
                   })
                   .then((res) => {
-                    console.log(res);
+                    // console.log(res);
                     window.location.href = "/";
                   })
                   .catch((err) => console.log(err));
@@ -136,7 +134,6 @@ const PostWrite = (props) => {
             .putString(preview, "data_url")
             .then(function (snapshot) {
               snapshot.ref.getDownloadURL().then((url) => {
-                console.log("스냅샷 URL", url);
                 //axios
                 axiosInstance
                     .put(`/posts/${post_id}`, {
@@ -148,7 +145,7 @@ const PostWrite = (props) => {
                       categoryName: cate,
                     })
                     .then((res) => {
-                      console.log(res);
+                      // console.log(res);
                       window.location.href = "/";
                     })
                     .catch((err) => console.log(err));
@@ -165,7 +162,6 @@ const PostWrite = (props) => {
               categoryName: cate,
             })
             .then((res) => {
-              console.log(res);
               window.location.href = "/";
             })
             .catch((err) => console.log(err));

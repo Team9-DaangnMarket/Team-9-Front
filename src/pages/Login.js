@@ -14,7 +14,6 @@ const Login = () => {
 
   const [login_disabeld, setLoginDisabled] = useState(true);
   const [input_values, setInputValues] = useState({ user_id: "", user_pw: "" });
-  console.log(input_values);
 
   const handleChangeInput = (e) => {
     setInputValues({

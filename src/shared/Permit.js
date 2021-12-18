@@ -8,7 +8,6 @@ import {Grid, Button} from '../elements'
 const Permit = (props) => {
   const {children} = props
   const is_login = getCookie('id')
-  console.log('로그인', is_login)
 
   if (!is_login) {
     return (

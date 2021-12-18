@@ -14,7 +14,6 @@ import OtherPost from '../components/OtherPost';
 const NO_IMG = 'https://www.i-shop.link/home/assets/images/no-image.png'
 
 const PostDetail = ({history}) => {
-  console.log('[PostDetail]')
   const is_login = getCookie('id')
   const params = useParams()
   const topBarRef = useRef(null)
@@ -23,7 +22,6 @@ const PostDetail = ({history}) => {
   const [detail_data, setDetailData] = useState(null)
   const [alt_data, setAltData] = useState(null)
   const [cnt_value, setCntValue] = useState({like: 0, visit: 0})
-
 
   // 디테일 상단바 색상 세팅 함수
   const handleHeaderPaint = () => {
@@ -63,7 +61,7 @@ const PostDetail = ({history}) => {
   const handleClickLikeBtn = async (post_id) => {
     try {
       const res = await axiosInstance.post(`/postLike/${post_id}`);
-      console.log("찜하기 API 결과", res);
+      // console.log("찜하기 API 결과", res);
     } catch (err) {
       alert("알수없는 이유로 기능을 사용할 수 없습니다 :(");
     }
@@ -98,7 +96,7 @@ const PostDetail = ({history}) => {
     if (delete_confirm) {
       try {
         const res = await axiosInstance.delete(`/posts/${post_id}`);
-        console.log("데이터 삭제 성공", res);
+        // console.log("데이터 삭제 성공", res);
         window.location.href = "/";
       } catch (err) {
         alert("삭제 할 수 없습니다 :(");
@@ -130,18 +128,16 @@ const PostDetail = ({history}) => {
 
   const fetchDetailData = async () => {
     try {
-      console.log('params id', params.post_id)
       const res = await axiosInstance.get(`/posts/${params.post_id}`)
       setDetailData(res.data)
 
       const isLiked = res.data.likeCheck
-      console.log('찜 상태', isLiked)
       setHeart(isLiked)
       setCntValue({
         like: res.data.postLike,
         visit: res.data.visitCount
       })
-      console.log('상세 데이터 조회 성공', res)
+      // console.log('상세 데이터 조회 성공', res)
     } catch (err) {
       setDetailData(null);
       console.log("상세 데이터 조회 실패", err.response);
@@ -151,7 +147,7 @@ const PostDetail = ({history}) => {
   const fetchAltData = async () => {
     try {
       const res = await axiosInstance.get(`/posts?page=0&size=6`);
-      console.log("대체 데이터 조회 성공", res);
+      // console.log("대체 데이터 조회 성공", res);
       setAltData(res.data);
     } catch (err) {
       setAltData(null);

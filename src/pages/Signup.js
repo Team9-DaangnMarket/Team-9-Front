@@ -80,7 +80,6 @@ const Signup = (props) => {
       .post(`/user/checkNickname`, send_data)
       .then((res) => {
         const { result } = res.data;
-        console.log("중복 체크:", result);
         if (result) {
           setErr_namedouble(false);
           setOk_namedouble(true);
@@ -135,7 +134,6 @@ const Signup = (props) => {
       .putString(preview, "data_url")
       .then(function (snapshot) {
         snapshot.ref.getDownloadURL().then((url) => {
-          console.log("스냅샷 URL", url);
           setImg_url(url);
 
           //로그인 값 넘기는 것
@@ -147,7 +145,7 @@ const Signup = (props) => {
               profileImg: url,
             })
             .then((res) => {
-              console.log(res);
+              // console.log(res);
               window.alert("가입을 축하드려요!");
               history.push("/login");
             })
