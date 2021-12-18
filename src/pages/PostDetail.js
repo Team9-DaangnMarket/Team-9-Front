@@ -311,6 +311,15 @@ const PostDetail = ({history}) => {
             </div>
           </Grid>
 
+          <Grid is_container padding={"16px"}>
+            <div className={"cont-title"}>
+              <h2 className={"subject"}>{detail_data.title}</h2>
+              <span className={"category"}>{detail_data.categoryName}</span>
+              <span className={"datetime"}>{detail_data.createdAt}</span>
+            </div>
+            <div className={"cont-desc"}>{detail_data.content}</div>
+          </Grid>
+
           <Grid is_container padding={'16px'}>
             <div className={'veiws-count'}>관심 {cnt_value.like}· 조회 {cnt_value.visit}</div>
             <button type={'button'} className={'singo-btn'}>
