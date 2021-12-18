@@ -30,19 +30,19 @@ const PostWrite = (props) => {
   useEffect(() => {
     if (post_id) {
       axiosInstance
-        .get(`/posts/${post_id}`)
-        .then((res) => {
-          set_Post(res.data);
-          setCate(res.data.categoryName);
-          setImg_url(res.data.goodsImg);
-          setPreview(res.data.goodsImg);
-          setPrice(res.data.price);
-          setTitle(res.data.title);
-          setContent(res.data.content);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+          .get(`/posts/${post_id}`)
+          .then((res) => {
+            set_Post(res.data);
+            setCate(res.data.categoryName);
+            setImg_url(res.data.goodsImg);
+            setPreview(res.data.goodsImg);
+            setPrice(res.data.price);
+            setTitle(res.data.title);
+            setContent(res.data.content);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
     }
   }, []);
 
@@ -104,156 +104,158 @@ const PostWrite = (props) => {
     if (!post_id) {
       const storageRef = storage.ref(fileInput.current.files[0].name);
       storage
-        .ref(`images/${user_id}_${new Date().getTime()}`)
-        .putString(preview, "data_url")
-        .then(function (snapshot) {
-          snapshot.ref.getDownloadURL().then((url) => {
-            //axios
-            axiosInstance
-              .post("/posts", {
-                title: title,
-                content: content,
-                price: price,
-                goodsImg: url,
-                negoCheck: true,
-                categoryName: cate,
-              })
-              .then((res) => {
-                console.log(res);
-                window.location.href = "/";
-              })
-              .catch((err) => console.log(err));
-          });
-        });
-    } else {
-      const file = fileInput.current.files[0];
-      if (file) {
-        const storageRef = storage.ref(fileInput.current.files[0].name);
-        storage
           .ref(`images/${user_id}_${new Date().getTime()}`)
           .putString(preview, "data_url")
           .then(function (snapshot) {
             snapshot.ref.getDownloadURL().then((url) => {
               //axios
               axiosInstance
-                .put(`/posts/${post_id}`, {
-                  title: title,
-                  content: content,
-                  price: price,
-                  goodsImg: url,
-                  negoCheck: true,
-                  categoryName: cate,
-                })
-                .then((res) => {
-                  console.log(res);
-                  window.location.href = "/";
-                })
-                .catch((err) => console.log(err));
+                  .post("/posts", {
+                    title: title,
+                    content: content,
+                    price: price,
+                    goodsImg: url,
+                    negoCheck: true,
+                    categoryName: cate,
+                  })
+                  .then((res) => {
+                    console.log(res);
+                    window.location.href = "/";
+                  })
+                  .catch((err) => console.log(err));
             });
           });
+    } else {
+      const file = fileInput.current.files[0];
+      if (file) {
+        const storageRef = storage.ref(fileInput.current.files[0].name);
+        storage
+            .ref(`images/${user_id}_${new Date().getTime()}`)
+            .putString(preview, "data_url")
+            .then(function (snapshot) {
+              snapshot.ref.getDownloadURL().then((url) => {
+                console.log("스냅샷 URL", url);
+                //axios
+                axiosInstance
+                    .put(`/posts/${post_id}`, {
+                      title: title,
+                      content: content,
+                      price: price,
+                      goodsImg: url,
+                      negoCheck: true,
+                      categoryName: cate,
+                    })
+                    .then((res) => {
+                      console.log(res);
+                      window.location.href = "/";
+                    })
+                    .catch((err) => console.log(err));
+              });
+            });
       } else {
         axiosInstance
-          .put(`/posts/${post_id}`, {
-            title: title,
-            content: content,
-            price: price,
-            goodsImg: img_url,
-            negoCheck: true,
-            categoryName: cate,
-          })
-          .then((res) => {
-            console.log(res);
-            window.location.href = "/";
-          })
-          .catch((err) => console.log(err));
+            .put(`/posts/${post_id}`, {
+              title: title,
+              content: content,
+              price: price,
+              goodsImg: img_url,
+              negoCheck: true,
+              categoryName: cate,
+            })
+            .then((res) => {
+              console.log(res);
+              window.location.href = "/";
+            })
+            .catch((err) => console.log(err));
       }
     }
   };
 
   return (
-    <>
-      <WriteBox>
-        <Grid is_container>
-          <Grid _className="title">
-            <Grid
-              is_flex
-              flex_align="center;"
-              flex_justify="space-between;"
-              _className="title-inner"
-            >
-              <p>
-                <BiArrowBack
-                  onClick={() => (window.location.href = "/")}
-                  style={{ cursor: "pointer" }}
-                />
-              </p>
-              <h3>중고거래 글쓰기</h3>
-              {post_id ? (
-                <Button _className="btn" _onClick={addPost}>
-                  수정
-                </Button>
-              ) : (
-                <Button _className="btn" _onClick={addPost}>
-                  완료
-                </Button>
-              )}
+      <>
+        <WriteBox>
+          <Grid is_container>
+            <Grid _className="title">
+              <Grid
+                  is_flex
+                  flex_align="center;"
+                  flex_justify="space-between;"
+                  _className="title-inner"
+              >
+                <p>
+                  <BiArrowBack
+                      onClick={() => (window.location.href = "/")}
+                      style={{ cursor: "pointer" }}
+                  />
+                </p>
+                <h3>중고거래 글쓰기</h3>
+                {post_id ? (
+                    <Button _className="btn" _onClick={addPost}>
+                      수정
+                    </Button>
+                ) : (
+                    <Button _className="btn" _onClick={addPost}>
+                      완료
+                    </Button>
+                )}
+              </Grid>
             </Grid>
-          </Grid>
-          <UploadBox>
-            <UploadBtn onClick={handleClick}>
-              <FaCamera />
-              <input
-                type="file"
-                className="fileUpload"
-                ref={fileInput}
-                onChange={selectFile}
+            <UploadBox>
+              <UploadBtn onClick={handleClick}>
+                <FaCamera />
+                <input
+                    type="file"
+                    className="fileUpload"
+                    ref={fileInput}
+                    onChange={selectFile}
+                />
+              </UploadBtn>
+              {preview ? (
+                  <>
+                    <UploadImg>
+                      <img src={preview} alt="pre_img" />
+                      <button
+                          onClick={() => {
+                            setPreview("");
+                            fileInput.current.value = null;
+                          }}
+
+                      >
+                        <MdOutlineClose />
+                      </button>
+                    </UploadImg>
+                  </>
+              ) : null}
+            </UploadBox>
+            <Grid>
+              <Input
+                  placeholder="글 제목(최대 20자)"
+                  _onChange={titleOnChange}
+                  value={_post?.title}
+                  max="20"
               />
-            </UploadBtn>
-            {preview ? (
-              <>
-                <UploadImg>
-                  <img src={preview} alt="pre_img" />
-                  <button
-                    onClick={() => {
-                      setPreview("");
-                      fileInput.current.value = null;
-                    }}
-                  >
-                    <MdOutlineClose />
-                  </button>
-                </UploadImg>
-              </>
-            ) : null}
-          </UploadBox>
-          <Grid>
-            <Input
-              placeholder="글 제목(최대 20자)"
-              _onChange={titleOnChange}
-              value={_post?.title}
-              max="20"
-            />
-          </Grid>
-          <SelectBox>
-            <div className="cate" onClick={openModal}>
-              {cate}
-              <span>
+            </Grid>
+            <SelectBox>
+              <div className="cate" onClick={openModal}>
+                {cate}
+                <span>
                 <FaChevronRight />
               </span>
-            </div>
-            {isOpen && (
-              <>
-                <Modal>
-                  <div className="shadow"></div>
-                  <ul>
-                    {dummyCate.map((c, i) => {
-                      return (
-                        <li
-                          key={`cate-id-${i}`}
-                          onClick={() => {
-                            setIsOpen(false);
-                            setCate(`${c}`);
-                          }}
-                        >
+              </div>
+              {isOpen && (
+                  <>
+                    <Modal>
+                      <div className="shadow"></div>
+                      <ul>
+                        {dummyCate.map((c, i) => {
+                          return (
+                              <li
+                                  key={`cate-id-${i}`}
+                                  onClick={() => {
+                                    setIsOpen(false);
+                                    setCate(`${c}`);
+                                  }}                               
+                >
                           {c}
                         </li>
                       );
@@ -266,54 +268,55 @@ const PostWrite = (props) => {
           <Grid is_flex _className="price-total-box">
             <Grid is_flex _className="price-box">
               <Cur cur={price}>\</Cur>
-              <Input
-                type={"number"}
-                placeholder="가격 (선택사항)"
-                _className="price"
-                _onChange={priceOnChange}
-                value={_post?.price}
-              ></Input>
-            </Grid>
+       
+                <Input
+                    type={"number"}
+                    placeholder="가격 (선택사항)"
+                    _className="price"
+                    _onChange={priceOnChange}
+                    value={_post?.price}
+                ></Input>
+              </Grid>
 
-            <Grid _className="price-checkbox">
-              <label className="control control--checkbox">
-                가격 제안받기
-                <input type="checkbox" ref={cbRef} />
-                <div className="control__indicator"></div>
-              </label>
+              <Grid _className="price-checkbox">
+                <label className="control control--checkbox">
+                  가격 제안받기
+                  <input type="checkbox" ref={cbRef} />
+                  <div className="control__indicator"></div>
+                </label>
+              </Grid>
             </Grid>
-          </Grid>
-          <textarea
-            cols="20"
-            rows="30"
-            defaultValue={_post?.content}
-            className="textarea"
-            type="textarea"
-            placeholder="올릴 게시글 내용을 작성해주세요.(가품 및 판매금지품목은 게시가 제한될 수 있어요.)"
-            onChange={(e) => {
-              setContent(e.target.value);
-            }}
-          />
-          <SettingCtrl>
-            <Grid
-              is_flex
-              flex_align="center;"
-              _className="setting-inner"
-              padding="16px"
-            >
+            <textarea
+                cols="20"
+                rows="30"
+                defaultValue={_post?.content}
+                className="textarea"
+                type="textarea"
+                placeholder="올릴 게시글 내용을 작성해주세요.(가품 및 판매금지품목은 게시가 제한될 수 있어요.)"
+                onChange={(e) => {
+                  setContent(e.target.value);
+                }}
+            />
+            <SettingCtrl>
+              <Grid
+                  is_flex
+                  flex_align="center;"
+                  _className="setting-inner"
+                  padding="16px"
+              >
               <span>
                 <MdOutlinePostAdd />
               </span>
-              <h5>자주 쓰는 문구</h5>
-              <span>
+                <h5>자주 쓰는 문구</h5>
+                <span>
                 <GoSettings />
               </span>
-              <h5>보여줄 동네 설정</h5>
-            </Grid>
-          </SettingCtrl>
-        </Grid>
-      </WriteBox>
-    </>
+                <h5>보여줄 동네 설정</h5>
+              </Grid>
+            </SettingCtrl>
+          </Grid>
+        </WriteBox>
+      </>
   );
 };
 
@@ -448,7 +451,7 @@ const Cur = styled.div`
   display: flex;
   align-items: center;
   color: ${(props) =>
-    props.cur ? `var(--main-font-color)` : `var(--sub-font-color)`};
+          props.cur ? `var(--main-font-color)` : `var(--sub-font-color)`};
 `;
 
 // 상품 사진 업로드
